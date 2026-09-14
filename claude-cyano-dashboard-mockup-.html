@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DEEPSCAN — Sonar Intelligence Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#070c13;
+    --bg-panel:#0f1928;
+    --bg-panel-alt:#141f30;
+    --bg-inset:#0a1420;
+    --border:#1f2f45;
+    --border-soft:#182536;
+    --text-primary:#e6eef7;
+    --text-muted:#7f93ab;
+    --text-faint:#546477;
+    --cyan:#39d9c6;
+    --cyan-dim:#1d5c56;
+    --blue:#4ea1f5;
+    --amber:#f0b544;
+    --red:#f0546b;
+    --green:#57c98a;
+    --radius-sharp:2px;
+    --radius-soft:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg-deep);
+    color:var(--text-primary);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:14px;
+    line-height:1.5;
+    height:100vh;
+    overflow:hidden;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  h1,h2,h3,.disp{font-family:'Space Grotesk',sans-serif;}
+
+  /* ---------- shell layout ---------- */
+  .shell{display:grid;grid-template-rows:52px 1fr;height:100vh;}
+
+  /* topbar */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 20px;border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg,#0d1826,#0a141f);
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{
+    width:26px;height:26px;border-radius:50%;
+    border:2px solid var(--cyan);position:relative;flex:none;
+  }
+  .brand-mark::after{
+    content:"";position:absolute;inset:6px;border-radius:50%;
+    background:var(--cyan);box-shadow:0 0 8px 2px var(--cyan);
+  }
+  .brand-name{font-size:15px;font-weight:600;letter-spacing:0.3px;}
+  .brand-name span{color:var(--cyan);}
+  .mission-meta{display:flex;gap:22px;color:var(--text-muted);font-size:12px;}
+  .mission-meta b{color:var(--text-primary);font-weight:500;}
+  .top-status{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--text-muted);}
+  .live-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--cyan);display:inline-block;
+    box-shadow:0 0 6px 1px var(--cyan);animation:pulse 1.8s infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+
+  /* body grid */
+  .body-grid{display:grid;grid-template-columns:190px 1fr 300px;min-height:0;}
+
+  /* nav */
+  .nav{border-right:1px solid var(--border);padding:16px 0;background:var(--bg-panel);}
+  .nav-item{
+    display:flex;align-items:center;gap:10px;padding:10px 18px;
+    color:var(--text-muted);cursor:pointer;font-size:13px;border-left:2px solid transparent;
+  }
+  .nav-item:hover{color:var(--text-primary);}
+  .nav-item.active{
+    color:var(--cyan);border-left:2px solid var(--cyan);background:rgba(57,217,198,0.06);
+  }
+  .nav-icon{width:16px;height:16px;flex:none;}
+  .nav-section-label{
+    padding:14px 18px 6px;font-size:10.5px;letter-spacing:0.5px;color:var(--text-faint);
+  }
+
+  /* main scroll area */
+  .main{overflow-y:auto;padding:20px 22px 40px;}
+  .view{display:none;}
+  .view.active{display:block;}
+  .view-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;}
+  .view-head h1{font-size:18px;font-weight:600;}
+  .view-head .sub{color:var(--text-muted);font-size:12.5px;}
+
+  /* kpi row */
+  .kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px;}
+  .kpi{
+    background:var(--bg-panel);border:1px solid var(--border-soft);border-radius:var(--radius-soft);
+    padding:12px 14px;
+  }
+  .kpi .label{font-size:11px;color:var(--text-muted);margin-bottom:6px;}
+  .kpi .value{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;}
+  .kpi .delta{font-size:11px;color:var(--cyan);margin-top:4px;}
+  .kpi .delta.warn{color:var(--amber);}
+
+  /* panels */
+  .panel{
+    background:var(--bg-panel);border:1px solid var(--border-soft);border-radius:var(--radius-soft);
+    padding:16px;margin-bottom:16px;
+  }
+  .panel-title{
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;
+  }
+  .panel-title h2{font-size:13.5px;font-weight:600;}
+  .panel-title .tag{
+    font-size:10.5px;color:var(--text-muted);background:var(--bg-inset);
+    border:1px solid var(--border-soft);padding:2px 8px;border-radius:20px;
+  }
+
+  .grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;}
+
+  /* sonar viewer */
+  .sonar-view{
+    position:relative;height:300px;border-radius:var(--radius-sharp);overflow:hidden;
+    border:1px solid var(--border-soft);background:#050a10;
+  }
+  .sonar-view canvas{width:100%;height:100%;display:block;}
+  .sweep-line{
+    position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,var(--cyan),transparent);
+    box-shadow:0 0 12px 2px var(--cyan);animation:sweep 4.5s linear infinite;opacity:0.85;
+  }
+  @keyframes sweep{0%{left:0%;}100%{left:100%;}}
+  .box{
+    position:absolute;border-radius:2px;pointer-events:none;
+  }
+  .box.known{border:1.5px solid var(--blue);}
+  .box.unknown{border:1.5px dashed var(--amber);}
+  .box .tag{
+    position:absolute;top:-19px;left:-1px;font-family:'IBM Plex Mono',monospace;font-size:10px;
+    padding:1px 5px;white-space:nowrap;
+  }
+  .box.known .tag{background:var(--blue);color:#04101c;}
+  .box.unknown .tag{background:var(--amber);color:#221703;}
+  .grid-overlay{
+    position:absolute;inset:0;
+    background-image:linear-gradient(rgba(57,217,198,0.07) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(57,217,198,0.07) 1px,transparent 1px);
+    background-size:33.33% 25%;
+  }
+
+  /* pipeline strip */
+  .pipeline{display:flex;align-items:center;gap:0;margin-top:4px;}
+  .pstep{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+  .pstep .dot{
+    width:11px;height:11px;border-radius:50%;background:var(--bg-inset);
+    border:2px solid var(--text-faint);z-index:1;
+  }
+  .pstep.done .dot{border-color:var(--cyan);background:var(--cyan);}
+  .pstep.running .dot{border-color:var(--amber);background:var(--amber);animation:pulse 1.2s infinite;}
+  .pstep .line{position:absolute;top:5px;left:-50%;width:100%;height:2px;background:var(--border-soft);z-index:0;}
+  .pstep:first-child .line{display:none;}
+  .pstep.done .line{background:var(--cyan-dim);}
+  .pstep .plabel{font-size:10.5px;color:var(--text-muted);margin-top:8px;text-align:center;}
+  .pstep.done .plabel, .pstep.running .plabel{color:var(--text-primary);}
+
+  /* bars */
+  .metric-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;color:var(--text-muted);}
+  .metric-row b{color:var(--text-primary);font-weight:500;font-family:'IBM Plex Mono',monospace;}
+  .bar{height:5px;background:var(--bg-inset);border-radius:3px;overflow:hidden;margin-bottom:14px;}
+  .bar span{display:block;height:100%;background:var(--cyan);}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  th{
+    text-align:left;font-size:10.5px;letter-spacing:0.4px;color:var(--text-faint);
+    border-bottom:1px solid var(--border-soft);padding:8px 10px;font-weight:500;
+  }
+  td{padding:9px 10px;border-bottom:1px solid var(--border-soft);color:var(--text-primary);}
+  tr.rowlink{cursor:pointer;}
+  tr.rowlink:hover td{background:rgba(57,217,198,0.05);}
+  .mono-cell{font-family:'IBM Plex Mono',monospace;color:var(--text-muted);}
+  .badge{
+    display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:20px;font-family:'IBM Plex Mono',monospace;
+  }
+  .badge.known{background:rgba(78,161,245,0.14);color:var(--blue);}
+  .badge.unknown{background:rgba(240,181,68,0.14);color:var(--amber);}
+  .badge.confirmed{background:rgba(87,201,138,0.14);color:var(--green);}
+  .badge.investigating{background:rgba(240,181,68,0.14);color:var(--amber);}
+  .badge.fused{background:rgba(57,217,198,0.14);color:var(--cyan);}
+  .badge.high{background:rgba(240,84,107,0.14);color:var(--red);}
+  .badge.medium{background:rgba(240,181,68,0.14);color:var(--amber);}
+  .badge.low{background:rgba(87,201,138,0.14);color:var(--green);}
+  .conf-wrap{display:flex;align-items:center;gap:8px;}
+  .conf-bar{width:56px;height:4px;background:var(--bg-inset);border-radius:2px;overflow:hidden;}
+  .conf-bar span{display:block;height:100%;background:var(--cyan);}
+
+  /* investigation cards */
+  .invest-card{
+    border:1px solid var(--border-soft);border-radius:var(--radius-soft);padding:14px;margin-bottom:12px;
+    display:grid;grid-template-columns:96px 1fr 190px;gap:16px;
+  }
+  .chip{
+    width:96px;height:96px;border-radius:4px;background:#050a10;border:1px solid var(--border-soft);
+    position:relative;overflow:hidden;
+  }
+  .chip canvas{width:100%;height:100%;}
+  .checklist{list-style:none;font-size:12.5px;}
+  .checklist li{display:flex;align-items:center;gap:8px;padding:4px 0;color:var(--text-muted);}
+  .checklist .ok{color:var(--green);}
+  .checklist .pending{color:var(--amber);}
+  .checklist .fail{color:var(--red);}
+  .invest-actions{display:flex;flex-direction:column;gap:8px;justify-content:center;}
+
+  button{
+    font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;
+    padding:8px 12px;border-radius:5px;cursor:pointer;border:1px solid var(--border-soft);
+    background:var(--bg-inset);color:var(--text-primary);
+  }
+  button.primary{background:var(--cyan);border-color:var(--cyan);color:#04141a;}
+  button.danger{border-color:var(--red);color:var(--red);background:transparent;}
+  button.ghost{background:transparent;}
+  button:hover{filter:brightness(1.15);}
+
+  /* geo map */
+  .map-wrap{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;}
+  .chart{
+    position:relative;height:340px;border-radius:var(--radius-sharp);overflow:hidden;
+    background:radial-gradient(ellipse at 30% 30%, #0d1c22, #060b10 70%);
+    border:1px solid var(--border-soft);
+  }
+  .chart svg{position:absolute;inset:0;}
+  .layer-toggles{display:flex;gap:8px;margin-bottom:12px;}
+  .chip-toggle{
+    font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--border-soft);
+    color:var(--text-muted);cursor:pointer;
+  }
+  .chip-toggle.on{border-color:var(--cyan);color:var(--cyan);background:rgba(57,217,198,0.08);}
+
+  /* inspector */
+  .inspector{border-left:1px solid var(--border);background:var(--bg-panel);padding:18px;overflow-y:auto;}
+  .inspector h3{font-size:13px;margin-bottom:2px;}
+  .inspector .sub-id{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-muted);margin-bottom:14px;}
+  .insp-chip{width:100%;height:130px;border-radius:6px;overflow:hidden;border:1px solid var(--border-soft);margin-bottom:14px;background:#050a10;}
+  .insp-chip canvas{width:100%;height:100%;}
+  .insp-row{display:flex;justify-content:space-between;font-size:12px;padding:7px 0;border-bottom:1px solid var(--border-soft);color:var(--text-muted);}
+  .insp-row b{color:var(--text-primary);font-weight:500;font-family:'IBM Plex Mono',monospace;}
+  .insp-section-label{font-size:10.5px;letter-spacing:0.4px;color:var(--text-faint);margin:16px 0 6px;}
+  .insp-actions{display:flex;gap:8px;margin-top:16px;}
+  .insp-actions button{flex:1;}
+
+  /* reports */
+  .report-preview{
+    background:var(--bg-inset);border:1px solid var(--border-soft);border-radius:var(--radius-soft);
+    padding:20px;max-width:640px;
+  }
+  .report-preview h3{font-size:15px;margin-bottom:4px;}
+  .report-preview .gen-meta{font-size:11px;color:var(--text-faint);margin-bottom:16px;font-family:'IBM Plex Mono',monospace;}
+  .report-preview h4{font-size:12px;color:var(--cyan);margin:16px 0 6px;letter-spacing:0.3px;}
+  .report-preview p{font-size:12.5px;color:var(--text-muted);}
+  .history-item{display:flex;justify-content:space-between;font-size:12.5px;padding:9px 0;border-bottom:1px solid var(--border-soft);color:var(--text-muted);}
+  .history-item b{color:var(--text-primary);font-weight:500;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-name">DEEP<span>SCAN</span></div>
+    </div>
+    <div class="mission-meta">
+      <div>MISSION <b>COASTAL-SWEEP&nbsp;07</b></div>
+      <div>VESSEL <b>RV Neelkanth</b></div>
+      <div>SURVEY AREA <b>Sector B, Konkan Shelf</b></div>
+      <div>SONAR <b>XTF · 900kHz</b></div>
+    </div>
+    <div class="top-status">
+      <span><span class="live-dot"></span> LIVE INGESTION</span>
+      <span class="mono">14 SEP 2026 · 11:42 IST</span>
+    </div>
+  </div>
+
+  <div class="body-grid">
+
+    <!-- NAV -->
+    <div class="nav">
+      <div class="nav-section-label">DETECTION</div>
+      <div class="nav-item active" data-view="overview">Overview</div>
+      <div class="nav-item" data-view="feed">Detection Feed</div>
+      <div class="nav-item" data-view="investigate">Investigation Queue</div>
+      <div class="nav-section-label">INTELLIGENCE</div>
+      <div class="nav-item" data-view="geo">Geo &amp; Hazard Map</div>
+      <div class="nav-item" data-view="reports">Reports</div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- OVERVIEW -->
+      <div class="view active" id="view-overview">
+        <div class="view-head">
+          <h1>Mission Overview</h1>
+          <div class="sub">Pipeline health &amp; live sonar tile — updated 4s ago</div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi"><div class="label">Area Surveyed</div><div class="value">42.6 km²</div><div class="delta">+3.1 km² today</div></div>
+          <div class="kpi"><div class="label">Pings Processed</div><div class="value">1.84M</div><div class="delta">98.4% coverage</div></div>
+          <div class="kpi"><div class="label">Objects Detected</div><div class="value">128</div><div class="delta">96 known · 32 unknown</div></div>
+          <div class="kpi"><div class="label">Under Investigation</div><div class="value">14</div><div class="delta warn">5 high priority</div></div>
+          <div class="kpi"><div class="label">Data Quality Score</div><div class="value">91%</div><div class="delta">2 gaps flagged</div></div>
+          <div class="kpi"><div class="label">Mission Confidence</div><div class="value">87%</div><div class="delta">physics-verified</div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-title">
+              <h2>Live Tile — Sector B4-17</h2>
+              <span class="tag">TILE 214 / 480</span>
+            </div>
+            <div class="sonar-view" id="sonarCanvasWrap">
+              <canvas id="sonarNoise"></canvas>
+              <div class="grid-overlay"></div>
+              <div class="sweep-line"></div>
+              <div class="box known" style="left:14%;top:22%;width:16%;height:20%;">
+                <div class="tag">Anchor chain · 94%</div>
+              </div>
+              <div class="box known" style="left:52%;top:48%;width:20%;height:24%;">
+                <div class="tag">Debris field · 88%</div>
+              </div>
+              <div class="box unknown" style="left:76%;top:16%;width:14%;height:18%;">
+                <div class="tag">A-231 · unknown · 61%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title"><h2>Survey Quality Report</h2><span class="tag">AUTO</span></div>
+            <div class="metric-row"><span>Signal-to-noise ratio</span><b>27 dB</b></div>
+            <div class="bar"><span style="width:82%"></span></div>
+            <div class="metric-row"><span>Coverage completeness</span><b>98.4%</b></div>
+            <div class="bar"><span style="width:98%"></span></div>
+            <div class="metric-row"><span>Noise filtered pre-detection</span><b>12%</b></div>
+            <div class="bar"><span style="width:12%;background:var(--amber)"></span></div>
+            <div class="metric-row"><span>Coverage gaps flagged</span><b>2 zones</b></div>
+            <div class="bar"><span style="width:6%;background:var(--red)"></span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h2>Pipeline Status</h2><span class="tag">RUN #0842</span></div>
+          <div class="pipeline">
+            <div class="pstep done"><div class="dot"></div><div class="plabel">Ingestion &amp;<br>Preprocessing</div></div>
+            <div class="pstep done"><div class="line"></div><div class="dot"></div><div class="plabel">Survey Quality<br>Report</div></div>
+            <div class="pstep done"><div class="line"></div><div class="dot"></div><div class="plabel">Tiling &amp;<br>Overlap</div></div>
+            <div class="pstep running"><div class="line"></div><div class="dot"></div><div class="plabel">YOLO11 +<br>Anomaly Model</div></div>
+            <div class="pstep running"><div class="line"></div><div class="dot"></div><div class="plabel">Physics-Aware<br>Fusion</div></div>
+            <div class="pstep"><div class="line"></div><div class="dot"></div><div class="plabel">Trust &amp; Geo<br>Intelligence</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETECTION FEED -->
+      <div class="view" id="view-feed">
+        <div class="view-head">
+          <h1>Detection Feed</h1>
+          <div class="sub">All objects surfaced by YOLO11 and the anomaly model, post-fusion</div>
+        </div>
+        <div class="panel">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Class</th><th>Type</th><th>Confidence</th><th>Depth</th><th>Coordinates</th><th>Status</th></tr>
+            </thead>
+            <tbody id="feedBody">
+              <tr class="rowlink" data-id="OBJ-0182" data-class="Anchor Chain" data-type="known" data-conf="94" data-depth="34 m" data-coord="19.812°N, 71.204°E" data-status="confirmed" data-notes="Cross-ping match across 3 passes. Shadow geometry consistent with chain link cluster.">
+                <td class="mono-cell">OBJ-0182</td><td>Anchor Chain</td><td><span class="badge known">KNOWN</span></td>
+                <td><div class="conf-wrap"><div class="conf-bar"><span style="width:94%"></span></div><span class="mono-cell">94%</span></div></td>
+                <td class="mono-cell">34 m</td><td class="mono-cell">19.812°N, 71.204°E</td><td><span class="badge confirmed">Confirmed</span></td>
+              </tr>
+              <tr class="rowlink" data-id="OBJ-0183" data-class="Debris Field" data-type="known" data-conf="88" data-depth="41 m" data-coord="19.809°N, 71.201°E" data-status="confirmed" data-notes="Consistent scatter pattern, low ecological sensitivity zone.">
+                <td class="mono-cell">OBJ-0183</td><td>Debris Field</td><td><span class="badge known">KNOWN</span></td>
+                <td><div class="conf-wrap"><div class="conf-bar"><span style="width:88%"></span></div><span class="mono-cell">88%</span></div></td>
+                <td class="mono-cell">41 m</td><td class="mono-cell">19.809°N, 71.201°E</td><td><span class="badge confirmed">Confirmed</span></td>
+              </tr>
+              <tr class="rowlink" data-id="OBJ-0184" data-class="Unidentified Cylinder" data-type="unknown" data-conf="61" data-depth="52 m" data-coord="19.815°N, 71.209°E" data-status="investigating" data-notes="Flagged by anomaly model. Entered investigation mode for closer-look re-scan.">
+                <td class="mono-cell">OBJ-0184</td><td>Unidentified Cylinder</td><td><span class="badge unknown">UNKNOWN</span></td>
+                <td><div class="conf-wrap"><div class="conf-bar"><span style="width:61%"></span></div><span class="mono-cell">61%</span></div></td>
+                <td class="mono-cell">52 m</td><td class="mono-cell">19.815°N, 71.209°E</td><td><span class="badge investigating">Investigating</span></td>
+              </tr>
+              <tr class="rowlink" data-id="OBJ-0185" data-class="Shipwreck Fragment" data-type="known" data-conf="79" data-depth="38 m" data-coord="19.807°N, 71.198°E" data-status="fused" data-notes="Passed physics-aware fusion: shadow length and cross-ping position agree within 0.4m.">
+                <td class="mono-cell">OBJ-0185</td><td>Shipwreck Fragment</td><td><span class="badge known">KNOWN</span></td>
+                <td><div class="conf-wrap"><div class="conf-bar"><span style="width:79%"></span></div><span class="mono-cell">79%</span></div></td>
+                <td class="mono-cell">38 m</td><td class="mono-cell">19.807°N, 71.198°E</td><td><span class="badge fused">Fused</span></td>
+              </tr>
+              <tr class="rowlink" data-id="OBJ-0186" data-class="Unidentified Mass" data-type="unknown" data-conf="55" data-depth="60 m" data-coord="19.818°N, 71.212°E" data-status="investigating" data-notes="Cross-ping verification pending second pass; size plausibility flagged for review.">
+                <td class="mono-cell">OBJ-0186</td><td>Unidentified Mass</td><td><span class="badge unknown">UNKNOWN</span></td>
+                <td><div class="conf-wrap"><div class="conf-bar"><span style="width:55%"></span></div><span class="mono-cell">55%</span></div></td>
+                <td class="mono-cell">60 m</td><td class="mono-cell">19.818°N, 71.212°E</td><td><span class="badge investigating">Investigating</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- INVESTIGATION QUEUE -->
+      <div class="view" id="view-investigate">
+        <div class="view-head">
+          <h1>Investigation Queue</h1>
+          <div class="sub">Anomaly-model detections awaiting physics-aware verification before fusion</div>
+        </div>
+
+        <div class="invest-card">
+          <div class="chip"><canvas class="chipCanvas"></canvas></div>
+          <div>
+            <h3 class="disp" style="font-size:14px;margin-bottom:2px;">OBJ-0184 · Unidentified Cylinder</h3>
+            <div class="sub-id mono" style="color:var(--text-muted);font-size:11px;margin-bottom:10px;">52 m depth · 19.815°N, 71.209°E · flagged 09:14 IST</div>
+            <ul class="checklist">
+              <li><span class="ok">✓</span> Shadow consistency — geometry matches expected acoustic shadow</li>
+              <li><span class="ok">✓</span> Cross-ping verification — confirmed across 2 overlapping tiles</li>
+              <li><span class="pending">●</span> Size plausibility — awaiting reference-object comparison</li>
+            </ul>
+          </div>
+          <div class="invest-actions">
+            <button class="primary">Confirm as Hazard</button>
+            <button class="ghost">Reclassify Object</button>
+            <button class="danger">Dismiss as Noise</button>
+          </div>
+        </div>
+
+        <div class="invest-card">
+          <div class="chip"><canvas class="chipCanvas"></canvas></div>
+          <div>
+            <h3 class="disp" style="font-size:14px;margin-bottom:2px;">OBJ-0186 · Unidentified Mass</h3>
+            <div class="sub-id mono" style="color:var(--text-muted);font-size:11px;margin-bottom:10px;">60 m depth · 19.818°N, 71.212°E · flagged 09:31 IST</div>
+            <ul class="checklist">
+              <li><span class="ok">✓</span> Shadow consistency — geometry matches expected acoustic shadow</li>
+              <li><span class="pending">●</span> Cross-ping verification — second pass scheduled next transect</li>
+              <li><span class="fail">✕</span> Size plausibility — exceeds expected bounds for sector, flagged</li>
+            </ul>
+          </div>
+          <div class="invest-actions">
+            <button class="primary">Confirm as Hazard</button>
+            <button class="ghost">Reclassify Object</button>
+            <button class="danger">Dismiss as Noise</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GEO & HAZARD MAP -->
+      <div class="view" id="view-geo">
+        <div class="view-head">
+          <h1>Geo &amp; Hazard Map</h1>
+          <div class="sub">Confidence-weighted object positions with hazard and ecological overlays</div>
+        </div>
+        <div class="layer-toggles">
+          <div class="chip-toggle on">Hazard Priority</div>
+          <div class="chip-toggle">Ecological Sensitivity</div>
+          <div class="chip-toggle">Detection Confidence</div>
+        </div>
+        <div class="map-wrap">
+          <div class="chart">
+            <svg viewBox="0 0 400 340" preserveAspectRatio="none">
+              <line x1="0" y1="85" x2="400" y2="85" stroke="#182536" stroke-width="1"/>
+              <line x1="0" y1="170" x2="400" y2="170" stroke="#182536" stroke-width="1"/>
+              <line x1="0" y1="255" x2="400" y2="255" stroke="#182536" stroke-width="1"/>
+              <line x1="100" y1="0" x2="100" y2="340" stroke="#182536" stroke-width="1"/>
+              <line x1="200" y1="0" x2="200" y2="340" stroke="#182536" stroke-width="1"/>
+              <line x1="300" y1="0" x2="300" y2="340" stroke="#182536" stroke-width="1"/>
+              <path d="M20,300 Q120,260 180,290 T380,250" stroke="#20344a" stroke-width="1.5" fill="none"/>
+              <path d="M0,200 Q140,160 260,210 T400,160" stroke="#182536" stroke-width="1" fill="none" stroke-dasharray="3 4"/>
+              <circle cx="150" cy="120" r="7" fill="#f0546b" opacity="0.9"/>
+              <circle cx="150" cy="120" r="14" fill="#f0546b" opacity="0.18"/>
+              <circle cx="245" cy="200" r="6" fill="#f0546b" opacity="0.9"/>
+              <circle cx="245" cy="200" r="13" fill="#f0546b" opacity="0.18"/>
+              <circle cx="90" cy="210" r="5" fill="#f0b544" opacity="0.9"/>
+              <circle cx="320" cy="140" r="5" fill="#f0b544" opacity="0.9"/>
+              <circle cx="60" cy="90" r="4" fill="#39d9c6" opacity="0.85"/>
+              <circle cx="190" cy="60" r="4" fill="#39d9c6" opacity="0.85"/>
+              <circle cx="340" cy="270" r="4" fill="#39d9c6" opacity="0.85"/>
+              <path d="M20,30 L70,25 L85,60 L40,70 Z" fill="#57c98a" opacity="0.14" stroke="#57c98a" stroke-width="1"/>
+              <text x="30" y="45" fill="#57c98a" font-size="9" font-family="IBM Plex Mono">reef zone</text>
+            </svg>
+          </div>
+          <div>
+            <div class="panel-title" style="margin-bottom:10px;"><h2 style="font-size:12.5px;">Hazard Priority Ranking</h2></div>
+            <table>
+              <thead><tr><th>Object</th><th>Score</th><th>Eco. sensitivity</th></tr></thead>
+              <tbody>
+                <tr><td class="mono-cell">OBJ-0184</td><td><span class="badge high">HIGH</span></td><td>Low</td></tr>
+                <tr><td class="mono-cell">OBJ-0186</td><td><span class="badge high">HIGH</span></td><td>Moderate</td></tr>
+                <tr><td class="mono-cell">OBJ-0179</td><td><span class="badge medium">MED</span></td><td>Moderate</td></tr>
+                <tr><td class="mono-cell">OBJ-0183</td><td><span class="badge low">LOW</span></td><td>Low</td></tr>
+                <tr><td class="mono-cell">OBJ-0175</td><td><span class="badge low">LOW</span></td><td>High</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="view" id="view-reports">
+        <div class="view-head">
+          <h1>Mission Intelligence Reports</h1>
+          <div class="sub">Auto-generated briefings combining hazard, ecological, and confidence findings</div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-bottom:16px;">
+          <button class="primary">Generate New Report</button>
+          <button class="ghost">Export PDF</button>
+          <button class="ghost">Export CSV</button>
+          <button class="ghost">Export JSON</button>
+        </div>
+
+        <div class="report-preview">
+          <h3>Mission Intelligence Briefing — Coastal-Sweep 07</h3>
+          <div class="gen-meta">GENERATED 14 SEP 2026 · 11:38 IST · RUN #0842</div>
+          <h4>Executive Summary</h4>
+          <p>128 objects identified across 42.6 km² of surveyed seabed, of which 32 remain unclassified pending investigation. Two coverage gaps were flagged during quality review and do not materially affect the hazard assessment below.</p>
+          <h4>Key Findings</h4>
+          <p>5 objects rated high hazard priority, concentrated in Sector B4. One object sits within 40m of a mapped reef zone and is recommended for ecological review before any recovery operation.</p>
+          <h4>Confidence &amp; Data Quality</h4>
+          <p>Mission confidence index: 87%, derived from physics-aware shadow and cross-ping verification across 96 known-object and 32 anomaly detections.</p>
+        </div>
+
+        <div class="panel" style="margin-top:18px;max-width:640px;">
+          <div class="panel-title"><h2>Report History</h2></div>
+          <div class="history-item"><b>Coastal-Sweep 07 — Briefing #0841</b><span class="mono-cell">13 Sep, 18:02</span></div>
+          <div class="history-item"><b>Coastal-Sweep 07 — Briefing #0839</b><span class="mono-cell">13 Sep, 09:47</span></div>
+          <div class="history-item"><b>Coastal-Sweep 06 — Final Briefing</b><span class="mono-cell">10 Sep, 21:15</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- INSPECTOR -->
+    <div class="inspector">
+      <div class="insp-section-label">SELECTED OBJECT</div>
+      <h3 id="inspClass">Unidentified Cylinder</h3>
+      <div class="sub-id" id="inspId">OBJ-0184</div>
+      <div class="insp-chip"><canvas id="inspCanvas"></canvas></div>
+
+      <div class="insp-row"><span>Type</span><b id="inspType">Unknown</b></div>
+      <div class="insp-row"><span>Confidence</span><b id="inspConf">61%</b></div>
+      <div class="insp-row"><span>Depth</span><b id="inspDepth">52 m</b></div>
+      <div class="insp-row"><span>Coordinates</span><b id="inspCoord">19.815°N, 71.209°E</b></div>
+      <div class="insp-row"><span>Status</span><b id="inspStatus">Investigating</b></div>
+
+      <div class="insp-section-label">PHYSICS-AWARE FUSION</div>
+      <p style="font-size:12px;color:var(--text-muted);" id="inspNotes">Flagged by anomaly model. Entered investigation mode for closer-look re-scan.</p>
+
+      <div class="insp-actions">
+        <button class="primary">Confirm</button>
+        <button class="ghost">Escalate</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // --- tab switching ---
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    item.addEventListener('click',()=>{
+      document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      item.classList.add('active');
+      document.getElementById('view-'+item.dataset.view).classList.add('active');
+    });
+  });
+
+  // --- inspector update on row click ---
+  document.querySelectorAll('.rowlink').forEach(row=>{
+    row.addEventListener('click',()=>{
+      document.getElementById('inspClass').textContent = row.dataset.class;
+      document.getElementById('inspId').textContent = row.dataset.id;
+      document.getElementById('inspType').textContent = row.dataset.type === 'known' ? 'Known object' : 'Unknown / anomaly';
+      document.getElementById('inspConf').textContent = row.dataset.conf + '%';
+      document.getElementById('inspDepth').textContent = row.dataset.depth;
+      document.getElementById('inspCoord').textContent = row.dataset.coord;
+      document.getElementById('inspStatus').textContent = row.dataset.status.charAt(0).toUpperCase()+row.dataset.status.slice(1);
+      document.getElementById('inspNotes').textContent = row.dataset.notes;
+      drawNoise(document.getElementById('inspCanvas'));
+    });
+  });
+
+  // --- generative sonar-noise texture ---
+  function drawNoise(canvas){
+    if(!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width; canvas.height = rect.height;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    const img = ctx.createImageData(w,h);
+    for(let y=0;y<h;y++){
+      const band = Math.sin(y*0.11)*20 + Math.sin(y*0.02)*30;
+      for(let x=0;x<w;x++){
+        const n = Math.random()*70;
+        const v = Math.max(0, Math.min(255, 26 + band*0.4 + n));
+        const idx = (y*w+x)*4;
+        img.data[idx]=v*0.35; img.data[idx+1]=v*0.85; img.data[idx+2]=v*0.8; img.data[idx+3]=255;
+      }
+    }
+    ctx.putImageData(img,0,0);
+  }
+  window.addEventListener('load',()=>{
+    drawNoise(document.getElementById('sonarNoise'));
+    drawNoise(document.getElementById('inspCanvas'));
+    document.querySelectorAll('.chipCanvas').forEach(drawNoise);
+  });
+  window.addEventListener('resize',()=>{
+    drawNoise(document.getElementById('sonarNoise'));
+  });
+
+  // layer toggle chips (visual only)
+  document.querySelectorAll('.chip-toggle').forEach(c=>{
+    c.addEventListener('click',()=>c.classList.toggle('on'));
+  });
+</script>
+</body>
+</html>
