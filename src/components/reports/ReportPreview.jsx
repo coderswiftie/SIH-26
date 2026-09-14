@@ -13,18 +13,18 @@ export const ReportPreview = ({ generatedData }) => {
       <div className="panel-header">
         <div className="panel-title">
           <FileText size={16} />
-          <span>CYANO MISSION INTELLIGENCE SYNTHESIS BRIEFING</span>
+          <span>Survey intelligence summary briefing</span>
         </div>
 
         <div className="report-export-actions">
           <button className="btn btn-xs btn-cyan" onClick={() => exportToCSV(detections)}>
-            <Download size={12} /> CSV EXPORT
+            <Download size={12} /> Export CSV
           </button>
           <button className="btn btn-xs btn-cyan" onClick={() => exportToJSON({ metrics, detections, hazards, generatedData })}>
-            <Download size={12} /> JSON EXPORT
+            <Download size={12} /> Export JSON
           </button>
           <button className="btn btn-xs btn-outline" onClick={triggerPrintPDF}>
-            <Printer size={12} /> PRINT / PDF
+            <Printer size={12} /> Print / PDF
           </button>
         </div>
       </div>
@@ -32,11 +32,11 @@ export const ReportPreview = ({ generatedData }) => {
       <div className="report-document-body">
         {/* Header Block */}
         <div className="doc-header">
-          <div className="doc-brand font-display">Cyan<span>O</span> SYNTHESIS BRIEFING</div>
+          <div className="doc-brand font-display">Cyan<span>O</span> Survey briefing</div>
           <div className="doc-meta font-mono text-xs">
-            <div>REPORT ID: <span className="text-cyan">{generatedData.id}</span></div>
-            <div>TIMESTAMP: <span className="text-bright">{generatedData.timestamp}</span></div>
-            <div>SECURITY CLASSIFICATION: <span className="text-green">UNCLASSIFIED // PACIFIC-ABYSS</span></div>
+            <div>Report ID: <span className="text-cyan">{generatedData.id}</span></div>
+            <div>Timestamp: <span className="text-bright">{generatedData.timestamp}</span></div>
+            <div>Classification: <span className="text-green">Unclassified // Pacific-Abyss</span></div>
           </div>
         </div>
 
@@ -44,10 +44,10 @@ export const ReportPreview = ({ generatedData }) => {
 
         {/* Section 1: Executive Summary */}
         <div className="doc-section">
-          <h3 className="doc-section-title font-display">1. EXECUTIVE SUMMARY</h3>
+          <h3 className="doc-section-title font-display">1. Executive summary</h3>
           <p className="doc-p font-sans">
             During acoustic survey operation <strong>PACIFIC-ABYSS-09</strong> conducted in Sector 7-B (Mariana Ridge) using the 
-            <strong> SAS-X4 Ultra-Aperture (450/900 kHz)</strong> system, a total of <strong>{metrics.pingsProcessed.toLocaleString()}</strong> acoustic pings were processed over 
+            <strong> SAS-X4 ultra-aperture (450/900 kHz)</strong> system, a total of <strong>{metrics.pingsProcessed.toLocaleString()}</strong> acoustic pings were processed over 
             <strong> {metrics.surveyedAreaKm2} km²</strong> of abyssal sea floor. 
             The autonomous AI ingestion pipeline logged <strong>{detections.length} acoustic targets</strong>, comprising 
             <strong> {metrics.knownObjects} YOLO11-verified known objects</strong> and <strong>{metrics.unknownAnomalies} flagged anomalies</strong> requiring multi-aspect physics verification.
@@ -56,7 +56,7 @@ export const ReportPreview = ({ generatedData }) => {
 
         {/* Section 2: Key Findings & Physics Audit */}
         <div className="doc-section">
-          <h3 className="doc-section-title font-display">2. KEY FORENSIC FINDINGS</h3>
+          <h3 className="doc-section-title font-display">2. Key survey findings</h3>
           <div className="doc-metrics-grid font-mono text-xs">
             <div className="doc-metric-card">
               <span className="text-muted">High Hazard Targets</span>
@@ -75,15 +75,15 @@ export const ReportPreview = ({ generatedData }) => {
 
         {/* Section 3: Priority Benthic Hazard Summary */}
         <div className="doc-section">
-          <h3 className="doc-section-title font-display">3. PRIORITY BENTHIC HAZARDS SUMMARY</h3>
+          <h3 className="doc-section-title font-display">3. Priority benthic hazards</h3>
           <table className="doc-table font-mono text-xs">
             <thead>
               <tr>
-                <th>TARGET ID</th>
-                <th>CLASSIFICATION</th>
-                <th>DEPTH</th>
-                <th>HAZARD INDEX</th>
-                <th>RECOMMENDED ACTION</th>
+                <th>Target ID</th>
+                <th>Classification</th>
+                <th>Depth</th>
+                <th>Hazard index</th>
+                <th>Recommended action</th>
               </tr>
             </thead>
             <tbody>
@@ -104,7 +104,7 @@ export const ReportPreview = ({ generatedData }) => {
         <div className="doc-footer font-mono text-xs">
           <div className="stamp">
             <Lock size={14} className="text-green" />
-            <span>CRYPTOGRAPHIC HASH: <strong className="text-bright">{generatedData.hash}</strong></span>
+            <span>Cryptographic hash: <strong className="text-bright">{generatedData.hash}</strong></span>
           </div>
           <div className="text-faint">CyanO Autonomous Marine Safety Engine — Verified Execution</div>
         </div>
@@ -121,8 +121,8 @@ export const ReportPreview = ({ generatedData }) => {
         }
         .report-document-body {
           padding: 20px 24px;
-          background: #020b12;
-          color: var(--text-main);
+          background: var(--bg-surface);
+          color: var(--text-primary);
           display: flex;
           flex-direction: column;
           gap: 16px;
@@ -151,8 +151,7 @@ export const ReportPreview = ({ generatedData }) => {
         .doc-section-title {
           font-size: 13px;
           font-weight: 700;
-          color: var(--cyan-primary);
-          letter-spacing: 0.5px;
+          color: var(--teal-deep);
         }
         .doc-p {
           font-size: 12.5px;
@@ -165,8 +164,8 @@ export const ReportPreview = ({ generatedData }) => {
           gap: 12px;
         }
         .doc-metric-card {
-          background: var(--bg-inset);
-          border: 1px solid var(--border-dim);
+          background: var(--bg-surface-alt);
+          border: 1px solid var(--border-soft);
           padding: 10px;
           border-radius: var(--radius-xs);
           display: flex;
@@ -180,21 +179,23 @@ export const ReportPreview = ({ generatedData }) => {
           text-align: left;
         }
         .doc-table th {
-          background: rgba(0, 229, 255, 0.05);
+          background: var(--bg-surface-alt);
           color: var(--text-muted);
           padding: 6px 10px;
           border-bottom: 1px solid var(--border-soft);
+          font-weight: 600;
         }
         .doc-table td {
           padding: 8px 10px;
           border-bottom: 1px solid var(--border-dim);
+          color: var(--text-primary);
         }
         .doc-footer {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          background: rgba(53, 230, 165, 0.04);
-          border: 1px solid rgba(53, 230, 165, 0.2);
+          background: #E4F2EE;
+          border: 1px solid #B5D9CF;
           padding: 10px 14px;
           border-radius: var(--radius-xs);
         }

@@ -89,8 +89,8 @@ export const GeoMapTab = () => {
     <div className="geo-map-tab">
       <div className="view-header">
         <div>
-          <h1 className="font-display text-bright">BATHYMETRIC GEO & HAZARD SPATIAL MAP</h1>
-          <p className="font-mono text-muted text-xs">High-Resolution Depth Contours & Benthic Hazard Overlays (Sector 7-B Mariana Ridge)</p>
+          <h1 className="font-display text-bright">Bathymetric map</h1>
+          <p className="font-mono text-muted text-xs">Depth contours and detected hazards across the current survey area.</p>
         </div>
       </div>
 
@@ -100,7 +100,7 @@ export const GeoMapTab = () => {
           <div className="panel-header">
             <div className="panel-title">
               <Compass size={16} />
-              <span>SPATIAL BATHYMETRY & SWATH TRACK (LAT: 11°22'N / LNG: 142°12'E)</span>
+              <span>Spatial bathymetry and swath track</span>
             </div>
             
             <div className="map-header-controls font-mono">
@@ -109,10 +109,10 @@ export const GeoMapTab = () => {
                 onClick={resetZoom}
                 title="Reset Bathymetry Map Zoom & Pan"
               >
-                <Maximize size={12} /> RESET ZOOM
+                <Maximize size={12} /> Reset zoom
               </button>
               <span className="badge badge-cyan">
-                ZOOM: {Math.round((800 / viewBox.w) * 100)}%
+                Zoom: {Math.round((800 / viewBox.w) * 100)}%
               </span>
             </div>
           </div>
@@ -135,18 +135,18 @@ export const GeoMapTab = () => {
                   <stop offset="100%" stopColor="#02080f" />
                 </linearGradient>
 
-                {/* Layer Heat Gradients */}
+                {/* Layer Heat Gradients — muted scientific palette */}
                 <radialGradient id="hazardGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#FF5570" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#FF5570" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#C84A4A" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#C84A4A" stopOpacity="0" />
                 </radialGradient>
                 <radialGradient id="ecologicalGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#35E6A5" stopOpacity="0.7" />
-                  <stop offset="100%" stopColor="#35E6A5" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#31856B" stopOpacity="0.30" />
+                  <stop offset="100%" stopColor="#31856B" stopOpacity="0" />
                 </radialGradient>
                 <radialGradient id="confidenceGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.7" />
-                  <stop offset="100%" stopColor="#00E5FF" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#13A7B5" stopOpacity="0.28" />
+                  <stop offset="100%" stopColor="#13A7B5" stopOpacity="0" />
                 </radialGradient>
               </defs>
 
@@ -154,7 +154,7 @@ export const GeoMapTab = () => {
               <rect x="-1000" y="-1000" width="3000" height="3000" fill="url(#depthGradient)" />
 
               {/* Grid Lines */}
-              <g stroke="rgba(0, 229, 255, 0.08)" strokeWidth="1">
+              <g stroke="rgba(100, 160, 170, 0.08)" strokeWidth="1">
                 <line x1="-1000" y1="110" x2="2000" y2="110" />
                 <line x1="-1000" y1="220" x2="2000" y2="220" />
                 <line x1="-1000" y1="330" x2="2000" y2="330" />
@@ -164,7 +164,7 @@ export const GeoMapTab = () => {
               </g>
 
               {/* Bathymetric Depth Contour Isolines */}
-              <g fill="none" stroke="rgba(0, 229, 255, 0.25)" strokeWidth="1.2">
+              <g fill="none" stroke="rgba(100, 160, 170, 0.22)" strokeWidth="1.2">
                 <path d="M 0 100 Q 200 40 400 120 T 800 90" strokeDasharray="3 3" />
                 <path d="M 0 180 Q 250 120 500 210 T 800 170" />
                 <path d="M 0 260 Q 180 320 450 240 T 800 290" />
@@ -182,15 +182,15 @@ export const GeoMapTab = () => {
                 <g>
                   <circle cx="510" cy="310" r="45" fill="url(#hazardGlow)" />
                   <circle cx="510" cy="310" r="85" fill="url(#hazardGlow)" opacity="0.4" />
-                  <circle cx="510" cy="310" r="12" stroke="#FF5570" strokeWidth="2" fill="none" className="pulse-ring" />
+                  <circle cx="510" cy="310" r="12" stroke="#C84A4A" strokeWidth="1.5" fill="none" className="pulse-ring" />
                 </g>
               )}
 
               {activeLayer === 'ecological' && (
                 <g>
                   {/* Marine Sanctuary & Coral Zone Boundary */}
-                  <polygon points="120,40 380,60 320,240 80,180" fill="rgba(53, 230, 165, 0.15)" stroke="#35E6A5" strokeWidth="1.5" strokeDasharray="6 4" />
-                  <text x="140" y="100" fill="#35E6A5" fontSize="11" fontFamily="monospace">PROTECTED DEEP CORAL SANCTUARY</text>
+                  <polygon points="120,40 380,60 320,240 80,180" fill="rgba(49, 133, 107, 0.10)" stroke="#31856B" strokeWidth="1.2" strokeDasharray="6 4" />
+                  <text x="140" y="100" fill="#31856B" fontSize="11" fontFamily="monospace">Protected deep coral sanctuary</text>
                 </g>
               )}
 
@@ -202,15 +202,15 @@ export const GeoMapTab = () => {
               )}
 
               {/* Vessel Swath Trajectory Track */}
-              <g stroke="#00E5FF" strokeWidth="2.5" opacity="0.8">
+              <g stroke="#1A8A96" strokeWidth="2" opacity="0.55">
                 <path d="M 60 380 L 220 280 L 480 320 L 720 120" strokeDasharray="8 6" />
               </g>
 
               {/* Vessel Position Marker */}
               <g transform="translate(720, 120)">
-                <circle cx="0" cy="0" r="8" fill="#00E5FF" />
-                <circle cx="0" cy="0" r="16" stroke="#00E5FF" strokeWidth="1.5" fill="none" />
-                <text x="14" y="4" fill="#00E5FF" fontSize="10" fontFamily="monospace" fontWeight="bold">R/V OCEANUS EXPLORER</text>
+                <circle cx="0" cy="0" r="6" fill="#13A7B5" />
+                <circle cx="0" cy="0" r="13" stroke="#13A7B5" strokeWidth="1" fill="none" opacity="0.6" />
+                <text x="14" y="4" fill="#13A7B5" fontSize="10" fontFamily="monospace" fontWeight="bold">R/V Oceanus Explorer</text>
               </g>
 
               {/* Detection Target Nodes */}
@@ -238,15 +238,15 @@ export const GeoMapTab = () => {
                     <circle 
                       cx="0" 
                       cy="0" 
-                      r={isSelected ? 9 : 7} 
-                      fill={isUnknown ? '#FF5570' : '#00E5FF'} 
-                      stroke="#ffffff"
-                      strokeWidth="1.5"
+                      r={isSelected ? 8 : 6} 
+                      fill={isUnknown ? '#C84A4A' : '#13A7B5'} 
+                      stroke="rgba(255,255,255,0.6)"
+                      strokeWidth="1"
                     />
                     <text 
                       x="12" 
                       y="4" 
-                      fill={isUnknown ? '#FF5570' : '#00E5FF'} 
+                      fill={isUnknown ? '#C84A4A' : '#13A7B5'} 
                       fontSize="10" 
                       fontFamily="monospace"
                       fontWeight="bold"
@@ -260,8 +260,8 @@ export const GeoMapTab = () => {
 
             {/* Map Telemetry Overlay */}
             <div className="map-info-overlay font-mono text-xs">
-              <span className="text-bright">ACTIVE LAYER: {activeLayer.toUpperCase()}</span>
-              <span className="text-muted">| COORDS: 11°21'44"N 142°12'08"E</span>
+              <span className="text-bright">Active layer: {activeLayer}</span>
+              <span className="text-muted"> | Coords: 11°21'44"N 142°12'08"E</span>
             </div>
           </div>
         </div>
@@ -297,7 +297,7 @@ export const GeoMapTab = () => {
           position: relative;
           width: 100%;
           aspect-ratio: 16 / 9;
-          background: #02080f;
+          background: #05121A;
           overflow: hidden;
           user-select: none;
         }

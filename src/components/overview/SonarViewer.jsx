@@ -29,13 +29,31 @@ export const SonarViewer = () => {
     // Palette Color Definitions
     const getColors = () => {
       if (sonarPalette === 'amber') {
-        return { bg: '#100b03', beam: 'rgba(255, 209, 102, 0.25)', grid: 'rgba(255, 209, 102, 0.12)', knownBox: '#FFD166', unkBox: '#FF5570' };
+        return {
+          bg: '#0F0A03',
+          beam: 'rgba(185, 133, 46, 0.18)',
+          grid: 'rgba(185, 133, 46, 0.08)',
+          knownBox: '#B9852E',
+          unkBox: '#C84A4A'
+        };
       }
       if (sonarPalette === 'emerald') {
-        return { bg: '#03120b', beam: 'rgba(53, 230, 165, 0.25)', grid: 'rgba(53, 230, 165, 0.12)', knownBox: '#35E6A5', unkBox: '#FF5570' };
+        return {
+          bg: '#031208',
+          beam: 'rgba(49, 133, 107, 0.18)',
+          grid: 'rgba(49, 133, 107, 0.08)',
+          knownBox: '#31856B',
+          unkBox: '#C84A4A'
+        };
       }
-      // Default Cyan
-      return { bg: '#030c14', beam: 'rgba(0, 229, 255, 0.25)', grid: 'rgba(0, 229, 255, 0.12)', knownBox: '#00E5FF', unkBox: '#FF5570' };
+      // Default: muted deep teal
+      return {
+        bg: '#0A1A20',
+        beam: 'rgba(19, 167, 181, 0.16)',
+        grid: 'rgba(19, 167, 181, 0.07)',
+        knownBox: '#13A7B5',
+        unkBox: '#C84A4A'
+      };
     };
 
     const render = () => {
@@ -142,13 +160,13 @@ export const SonarViewer = () => {
 
         // Highlight Glow if Selected
         if (isSelected) {
-          ctx.fillStyle = isUnknown ? 'rgba(255, 85, 112, 0.18)' : 'rgba(0, 229, 255, 0.18)';
+          ctx.fillStyle = isUnknown ? 'rgba(200, 74, 74, 0.12)' : 'rgba(19, 167, 181, 0.12)';
           ctx.fillRect(boxX, boxY, boxW, boxH);
 
           // Target reticle corner marks
           ctx.setLineDash([]);
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+          ctx.lineWidth = 1.5;
           const corner = 8;
           // Top Left
           ctx.beginPath(); ctx.moveTo(boxX - 3, boxX - 3 + corner); ctx.lineTo(boxX - 3, boxY - 3); ctx.lineTo(boxX - 3 + corner, boxY - 3); ctx.stroke();
@@ -167,7 +185,7 @@ export const SonarViewer = () => {
       ripplesRef.current.forEach((r, idx) => {
         ctx.beginPath();
         ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(0, 229, 255, ${r.opacity})`;
+        ctx.strokeStyle = `rgba(19, 167, 181, ${r.opacity * 0.7})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
@@ -217,7 +235,7 @@ export const SonarViewer = () => {
       <div className="panel-header">
         <div className="panel-title">
           <Zap size={16} />
-          <span>LIVE APERTURE SONAR CANVAS (SIDE-SCAN WATERFALL)</span>
+          <span>Live sonar feed</span>
         </div>
 
         <div className="sonar-controls">
@@ -226,7 +244,7 @@ export const SonarViewer = () => {
             onClick={injectSimulatedAnomaly}
             title="Inject Real-time Anomaly Trigger"
           >
-            + INJECT ANOMALY
+            + Inject anomaly
           </button>
 
           {/* Segmented Frequency Toggle Pill */}
@@ -262,7 +280,7 @@ export const SonarViewer = () => {
 
           <div className="control-group">
             <Sliders size={12} className="text-muted" />
-            <span className="font-mono text-xs text-muted">GAIN</span>
+            <span className="font-mono text-xs text-muted">Gain</span>
             <input 
               type="range" 
               min="30" 
@@ -327,10 +345,9 @@ export const SonarViewer = () => {
           transition: all 0.2s ease;
         }
         .freq-btn.active {
-          background: rgba(0, 229, 255, 0.18);
-          color: var(--cyan-primary);
-          border-color: rgba(0, 229, 255, 0.4);
-          box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+          background: rgba(19, 167, 181, 0.15);
+          color: #13A7B5;
+          border-color: rgba(19, 167, 181, 0.3);
         }
         .control-group {
           display: flex;
@@ -343,13 +360,13 @@ export const SonarViewer = () => {
         }
         .gain-slider {
           width: 70px;
-          accent-color: var(--cyan-primary);
+          accent-color: #13A7B5;
           cursor: pointer;
         }
         .canvas-wrapper {
           position: relative;
           width: 100%;
-          background: #02080d;
+          background: #0A1A20;
           aspect-ratio: 5 / 3;
           overflow: hidden;
         }
@@ -373,7 +390,7 @@ export const SonarViewer = () => {
           padding: 3px 8px;
           border-radius: var(--radius-xs);
           font-size: 10px;
-          color: var(--cyan-primary);
+          color: #13A7B5;
         }
         .legend-overlay {
           position: absolute;
@@ -386,7 +403,7 @@ export const SonarViewer = () => {
           padding: 4px 10px;
           border-radius: var(--radius-xs);
           font-size: 10px;
-          color: var(--text-bright);
+          color: rgba(180, 200, 205, 0.7);
           pointer-events: none;
         }
         .legend-item {
@@ -400,12 +417,12 @@ export const SonarViewer = () => {
           display: inline-block;
         }
         .legend-box.solid {
-          border: 1.5px solid var(--cyan-primary);
-          background: rgba(0, 229, 255, 0.2);
+          border: 1.5px solid #13A7B5;
+          background: rgba(19, 167, 181, 0.15);
         }
         .legend-box.dashed {
-          border: 1.5px dashed var(--red-hazard);
-          background: rgba(255, 85, 112, 0.2);
+          border: 1.5px dashed #C84A4A;
+          background: rgba(200, 74, 74, 0.12);
         }
       `}</style>
     </div>

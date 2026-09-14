@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Cpu, CheckCircle2, ArrowRight } from 'lucide-react';
 
 const INITIAL_STAGES = [
-  { id: 1, name: "INGESTION", sub: "48 pings/sec", status: "DONE" },
-  { id: 2, name: "QUALITY CHECK", sub: "SNR 24.8 dB", status: "DONE" },
-  { id: 3, name: "TILING", sub: "300x300 Chips", status: "RUNNING" },
-  { id: 4, name: "DETECTION", sub: "YOLO11 + Anomaly", status: "PENDING" },
-  { id: 5, name: "PHYSICS FUSION", sub: "Shadow Audit", status: "PENDING" },
-  { id: 6, name: "TRUST / GEO", sub: "Bathymetry Map", status: "PENDING" }
+  { id: 1, name: "Ingestion", sub: "48 pings/sec", status: "DONE" },
+  { id: 2, name: "Quality check", sub: "SNR 24.8 dB", status: "DONE" },
+  { id: 3, name: "Tiling", sub: "300x300 Chips", status: "RUNNING" },
+  { id: 4, name: "Detection", sub: "YOLO11 + Anomaly", status: "PENDING" },
+  { id: 5, name: "Physics fusion", sub: "Shadow audit", status: "PENDING" },
+  { id: 6, name: "Trust & mapping", sub: "Bathymetry map", status: "PENDING" }
 ];
 
 export const PipelineTracker = () => {
@@ -39,7 +39,7 @@ export const PipelineTracker = () => {
       <div className="panel-header">
         <div className="panel-title">
           <Cpu size={16} />
-          <span>AUTONOMOUS AI INGESTION & FORENSIC FUSION PIPELINE</span>
+          <span>Processing pipeline</span>
         </div>
       </div>
 

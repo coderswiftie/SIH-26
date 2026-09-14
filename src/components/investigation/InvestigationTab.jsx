@@ -24,12 +24,12 @@ export const InvestigationTab = () => {
     <div className="investigation-tab">
       <div className="view-header">
         <div>
-          <h1 className="font-display text-bright">ANOMALY FORENSIC INVESTIGATION QUEUE</h1>
-          <p className="font-mono text-muted text-xs">Multi-Aspect Cross-Ping Audit & Physics Shadow Consistency Verification</p>
+          <h1 className="font-display text-bright">Anomaly investigation queue</h1>
+          <p className="font-mono text-muted text-xs">Multi-aspect sonar ping audit and acoustic shadow consistency verification</p>
         </div>
 
         <button className="btn btn-cyan" onClick={injectSimulatedAnomaly}>
-          <PlusCircle size={14} /> INJECT SIMULATED ANOMALY
+          <PlusCircle size={14} /> Inject simulated anomaly
         </button>
       </div>
 
@@ -50,26 +50,26 @@ export const InvestigationTab = () => {
                   <span>{item.id}: {item.class}</span>
                 </div>
                 <span className={`badge ${item.hazardScore > 75 ? 'badge-red' : 'badge-amber'}`}>
-                  HAZARD: {item.hazardScore}/100
+                  Hazard: {item.hazardScore}/100
                 </span>
               </div>
 
               <div className="card-body">
                 <div className="card-top-info font-mono text-xs">
-                  <div><span className="text-muted">DEPTH:</span> <span className="text-cyan font-bold">{item.depth} m</span></div>
-                  <div><span className="text-muted">CONF:</span> <span className="text-bright font-bold">{item.confidence}%</span></div>
-                  <div><span className="text-muted">COORDS:</span> <span className="text-muted">{item.lat} · {item.lng}</span></div>
+                  <div><span className="text-muted">Depth:</span> <span className="text-cyan font-bold">{item.depth} m</span></div>
+                  <div><span className="text-muted">Confidence:</span> <span className="text-bright font-bold">{item.confidence}%</span></div>
+                  <div><span className="text-muted">Coords:</span> <span className="text-muted">{item.lat} · {item.lng}</span></div>
                 </div>
 
                 {/* Physics Verification Checklist */}
                 <div className="physics-checklist-card">
                   <div className="checklist-title font-mono text-xs text-bright font-bold">
-                    PHYSICS-VERIFICATION ENGINE AUDIT:
+                    Physics verification audit:
                   </div>
 
                   {/* Item 1: Shadow Length */}
                   <div className="check-row">
-                    <span className="check-label font-mono text-xs">Shadow Length Consistency</span>
+                    <span className="check-label font-mono text-xs">Shadow length consistency</span>
                     <PhysicsBadge status={physics.shadowStatus} />
                     <div className="check-buttons">
                       <button 
@@ -95,7 +95,7 @@ export const InvestigationTab = () => {
 
                   {/* Item 2: Cross Ping */}
                   <div className="check-row">
-                    <span className="check-label font-mono text-xs">Cross-Ping Coherence</span>
+                    <span className="check-label font-mono text-xs">Cross-ping coherence</span>
                     <PhysicsBadge status={physics.crossPingStatus} />
                     <div className="check-buttons">
                       <button 
@@ -112,7 +112,7 @@ export const InvestigationTab = () => {
 
                   {/* Item 3: Size Plausibility */}
                   <div className="check-row">
-                    <span className="check-label font-mono text-xs">Size & Reflectivity</span>
+                    <span className="check-label font-mono text-xs">Size & reflectivity</span>
                     <PhysicsBadge status={physics.sizePlausibility} />
                   </div>
                 </div>
@@ -131,7 +131,7 @@ export const InvestigationTab = () => {
                       confirmHazard(item.id);
                     }}
                   >
-                    <ShieldAlert size={12} /> Confirm Hazard
+                    <ShieldAlert size={12} /> Confirm hazard
                   </button>
 
                   <button 
@@ -205,8 +205,8 @@ export const InvestigationTab = () => {
           transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .card-selected {
-          border-color: var(--cyan-primary);
-          box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+          border-color: var(--teal-primary);
+          box-shadow: 0 0 0 2px rgba(8, 127, 140, 0.15);
         }
         .card-body {
           padding: 12px;
@@ -217,13 +217,13 @@ export const InvestigationTab = () => {
         .card-top-info {
           display: flex;
           justify-content: space-between;
-          background: var(--bg-inset);
+          background: var(--bg-surface-alt);
           padding: 8px 10px;
           border-radius: var(--radius-xs);
           border: 1px solid var(--border-dim);
         }
         .physics-checklist-card {
-          background: rgba(0, 229, 255, 0.03);
+          background: var(--bg-surface-alt);
           border: 1px solid var(--border-soft);
           border-radius: var(--radius-xs);
           padding: 10px;
@@ -246,10 +246,10 @@ export const InvestigationTab = () => {
           gap: 4px;
         }
         .card-notes {
-          background: var(--bg-inset);
+          background: var(--bg-surface-alt);
           padding: 8px;
           border-radius: var(--radius-xs);
-          border-left: 2px solid var(--amber-warning);
+          border-left: 2px solid var(--warning);
         }
         .card-actions {
           display: flex;
@@ -258,10 +258,10 @@ export const InvestigationTab = () => {
         .reclassify-inline-box {
           display: flex;
           gap: 6px;
-          background: var(--bg-dark);
+          background: var(--bg-surface-alt);
           padding: 8px;
           border-radius: var(--radius-xs);
-          border: 1px solid var(--cyan-primary);
+          border: 1px solid var(--teal-primary);
         }
       `}</style>
     </div>

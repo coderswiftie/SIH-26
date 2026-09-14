@@ -10,14 +10,14 @@ export const QualityReport = () => {
       <div className="panel-header">
         <div className="panel-title">
           <ShieldCheck size={16} />
-          <span>SURVEY ACOUSTIC QUALITY REPORT</span>
+          <span>Acoustic survey quality</span>
         </div>
       </div>
 
       <div className="quality-body">
         <div className="gauge-item">
           <div className="gauge-label font-mono">
-            <span>SIGNAL-TO-NOISE RATIO (SNR)</span>
+            <span>Signal-to-noise ratio (SNR)</span>
             <span className="text-cyan font-bold">{metrics.snrDb} dB</span>
           </div>
           <div className="bar-track">
@@ -27,7 +27,7 @@ export const QualityReport = () => {
 
         <div className="gauge-item">
           <div className="gauge-label font-mono">
-            <span>COVERAGE COMPLETENESS</span>
+            <span>Coverage completeness</span>
             <span className="text-green font-bold">{metrics.coverageCompleteness}%</span>
           </div>
           <div className="bar-track">
@@ -37,7 +37,7 @@ export const QualityReport = () => {
 
         <div className="gauge-item">
           <div className="gauge-label font-mono">
-            <span>NOISE REJECTION EFFICIENCY</span>
+            <span>Noise rejection efficiency</span>
             <span className="text-amber font-bold">{metrics.noiseFilteredPercent}%</span>
           </div>
           <div className="bar-track">
@@ -47,7 +47,7 @@ export const QualityReport = () => {
 
         <div className="gaps-summary font-mono text-xs">
           <CheckCircle size={13} className="text-green" />
-          <span>GAPS FLAGGED: {metrics.gapsFlaggedKm2} km² (MICRO-GAPS VERIFIED NO HAZARD)</span>
+          <span>Flagged gaps: {metrics.gapsFlaggedKm2} km² (micro-gaps verified, no hazard detected)</span>
         </div>
       </div>
 
@@ -75,7 +75,7 @@ export const QualityReport = () => {
         }
         .bar-track {
           height: 6px;
-          background: var(--bg-inset);
+          background: var(--bg-surface-alt);
           border-radius: var(--radius-xs);
           overflow: hidden;
           border: 1px solid var(--border-dim);
@@ -85,19 +85,19 @@ export const QualityReport = () => {
           border-radius: var(--radius-xs);
           transition: width 0.5s ease;
         }
-        .bar-fill.cyan { background: var(--cyan-primary); box-shadow: 0 0 8px var(--cyan-primary); }
-        .bar-fill.green { background: var(--green-success); box-shadow: 0 0 8px var(--green-success); }
-        .bar-fill.amber { background: var(--amber-warning); box-shadow: 0 0 8px var(--amber-warning); }
+        .bar-fill.cyan  { background: var(--teal-primary); }
+        .bar-fill.green { background: var(--success); }
+        .bar-fill.amber { background: var(--warning); }
 
         .gaps-summary {
           display: flex;
           align-items: center;
           gap: 8px;
-          background: rgba(53, 230, 165, 0.05);
-          border: 1px solid rgba(53, 230, 165, 0.2);
+          background: #E4F2EE;
+          border: 1px solid #B5D9CF;
           padding: 8px;
           border-radius: var(--radius-sm);
-          color: var(--text-bright);
+          color: var(--text-primary);
         }
         .font-bold { font-weight: 700; }
         .text-cyan { color: var(--cyan-primary); }

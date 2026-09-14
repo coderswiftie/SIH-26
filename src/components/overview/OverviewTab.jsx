@@ -9,8 +9,8 @@ export const OverviewTab = () => {
     <div className="overview-tab">
       <div className="view-header">
         <div>
-          <h1 className="font-display text-bright">DEEP SEA MISSION OVERVIEW</h1>
-          <p className="font-mono text-muted text-xs">Real-time Synthetic Aperture Sonar Telemetry & AI Forensic Analysis</p>
+          <h1 className="font-display text-bright">Mission overview</h1>
+          <p className="font-mono text-muted text-xs">Real-time synthetic aperture sonar telemetry and detection analysis</p>
         </div>
       </div>
 

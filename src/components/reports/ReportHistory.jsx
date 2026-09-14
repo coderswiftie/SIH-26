@@ -10,7 +10,7 @@ export const ReportHistory = () => {
       <div className="panel-header">
         <div className="panel-title">
           <Archive size={16} />
-          <span>ARCHIVED MISSION BRIEFINGS</span>
+          <span>Archived mission briefings</span>
         </div>
       </div>
 
@@ -18,14 +18,14 @@ export const ReportHistory = () => {
         {reportsHistory.map(rep => (
           <div key={rep.id} className="history-card font-mono text-xs">
             <div className="history-top">
-              <span className="font-bold text-cyan">{rep.id}</span>
-              <span className="badge badge-cyan">{rep.status}</span>
+              <span className="font-bold" style={{ color: 'var(--teal-primary)' }}>{rep.id}</span>
+              <span className="badge badge-teal">{rep.status}</span>
             </div>
-            <div className="history-title text-bright">{rep.title}</div>
+            <div className="history-title" style={{ color: 'var(--text-primary)' }}>{rep.title}</div>
             <div className="history-meta text-muted">
               <span>{rep.timestamp}</span> · <span>Author: {rep.author}</span>
             </div>
-            <div className="history-hash text-faint">HASH: {rep.hash}</div>
+            <div className="history-hash text-faint">Hash: {rep.hash}</div>
           </div>
         ))}
       </div>
@@ -42,8 +42,8 @@ export const ReportHistory = () => {
           gap: 10px;
         }
         .history-card {
-          background: var(--bg-inset);
-          border: 1px solid var(--border-dim);
+          background: var(--bg-surface-alt);
+          border: 1px solid var(--border-soft);
           padding: 10px;
           border-radius: var(--radius-xs);
           display: flex;

@@ -1,46 +1,75 @@
-/* Deep Ocean Intelligence Design System - CyanO */
+/* ─────────────────────────────────────────────
+   CyanO — Marine Science Workstation Design System
+   Light professional theme
+   ───────────────────────────────────────────── */
 
 :root {
-  --bg-deep: #030a10;
-  --bg-dark: #06131c;
-  --bg-panel: #0a1b26;
-  --bg-panel-hover: #0e2433;
-  --bg-panel-active: #122d40;
-  --bg-inset: #040e16;
-  
-  --border-dim: rgba(0, 229, 255, 0.1);
-  --border-soft: rgba(0, 229, 255, 0.2);
-  --border-bright: rgba(0, 229, 255, 0.5);
+  /* ── Backgrounds ── */
+  --bg-app:          #F5F8F8;
+  --bg-surface:      #FFFFFF;
+  --bg-surface-alt:  #EDF4F4;
+  --bg-inset:        #E6EEEF;
 
-  --cyan-primary: #00E5FF;
-  --cyan-glow: rgba(0, 229, 255, 0.4);
-  --cyan-dim: rgba(0, 229, 255, 0.12);
-  
-  --blue-accent: #2979FF;
-  --green-success: #35E6A5;
-  --amber-warning: #FFD166;
-  --red-hazard: #FF5570;
-  --purple-accent: #B388FF;
+  /* Legacy dark aliases kept so instrument-panel scoped styles still compile */
+  --bg-deep:         #030a10;
+  --bg-dark:         #06131c;
+  --bg-panel:        #0a1b26;
 
-  --text-bright: #F0FCFF;
-  --text-main: #C2E3EC;
-  --text-muted: #6B95A2;
-  --text-faint: #3B5F6C;
+  /* ── Borders ── */
+  --border-soft:     #D6E3E4;
+  --border-dim:      #E3ECEC;
+  --border-bright:   #087F8C;
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-display: 'Space Grotesk', sans-serif;
+  /* ── Brand / Teal palette ── */
+  --teal-primary:    #087F8C;
+  --teal-bright:     #13A7B5;
+  --teal-deep:       #075B66;
 
+  /* Legacy cyan aliases so instrument-panel scoped styles still compile */
+  --cyan-primary:    #00E5FF;
+  --cyan-glow:       rgba(0, 229, 255, 0.4);
+  --cyan-dim:        rgba(0, 229, 255, 0.12);
+
+  /* ── Semantic colours ── */
+  --success:         #31856B;
+  --warning:         #B9852E;
+  --hazard:          #C84A4A;
+
+  /* Legacy colour aliases kept for instrument-panel scoped styles */
+  --green-success:   #31856B;
+  --amber-warning:   #B9852E;
+  --red-hazard:      #C84A4A;
+  --blue-accent:     #2979FF;
+  --purple-accent:   #7C5CBF;
+
+  /* ── Text ── */
+  --text-primary:    #183238;
+  --text-secondary:  #60777B;
+  --text-muted:      #8FA8AC;
+  --text-faint:      #B0C8CB;
+
+  /* Legacy text aliases used throughout components */
+  --text-bright:     #183238;   /* maps to primary on light */
+  --text-main:       #60777B;   /* maps to secondary */
+
+  /* ── Typography ── */
+  --font-sans:       'IBM Plex Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:       'JetBrains Mono', monospace;
+  --font-display:    'IBM Plex Sans', sans-serif;
+
+  /* ── Geometry ── */
   --radius-xs: 3px;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
 
-  --shadow-panel: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-  --shadow-cyan: 0 0 20px rgba(0, 229, 255, 0.25);
-  --shadow-red: 0 0 20px rgba(255, 85, 112, 0.3);
+  /* ── Shadows ── */
+  --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-cyan:  0 0 0 2px rgba(8, 127, 140, 0.25);   /* focus ring */
+  --shadow-red:   0 0 0 2px rgba(200, 74, 74, 0.25);
 }
 
+/* ── Reset ── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -51,64 +80,46 @@ html, body, #root {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--bg-deep);
-  color: var(--text-main);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 13px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Monospace Utility */
+/* ── Monospace utility ── */
 .font-mono {
   font-family: var(--font-mono);
 }
 .font-display {
   font-family: var(--font-display);
+  font-weight: 600;
 }
 
-/* Custom Scrollbars */
+/* ── Scrollbars ── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-inset);
+  background: var(--bg-surface-alt);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-soft);
   border-radius: var(--radius-xs);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--cyan-primary);
+  background: var(--teal-primary);
 }
 
-/* Scanline Effect Overlay */
-.scanline-overlay {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.15) 50%
-  ), linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.01),
-    rgba(0, 255, 0, 0.005),
-    rgba(0, 0, 255, 0.01)
-  );
-  background-size: 100% 4px, 6px 100%;
-  opacity: 0.6;
-}
-
-/* Grid & Layout Shell */
+/* ── App shell grid ── */
 .app-shell {
   display: grid;
   grid-template-rows: 54px 1fr;
   height: 100vh;
   width: 100vw;
-  background: radial-gradient(circle at 50% 0%, #0c2636 0%, #030a10 70%);
+  background: var(--bg-app);
 }
 
 .body-layout {
@@ -118,13 +129,12 @@ html, body, #root {
   overflow: hidden;
 }
 
-/* Glassmorphic Panel Base */
+/* ── Panel base ── */
 .panel {
-  background: var(--bg-panel);
+  background: var(--bg-surface);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-panel);
-  backdrop-filter: blur(12px);
   position: relative;
   overflow: hidden;
 }
@@ -135,26 +145,24 @@ html, body, #root {
   justify-content: space-between;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border-dim);
-  background: rgba(0, 229, 255, 0.03);
+  background: var(--bg-surface-alt);
 }
 
 .panel-title {
   font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-bright);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .panel-title svg {
-  color: var(--cyan-primary);
+  color: var(--teal-primary);
 }
 
-/* Badges & Status */
+/* ── Badges ── */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -164,53 +172,51 @@ html, body, #root {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .badge-cyan {
-  background: rgba(0, 229, 255, 0.12);
-  color: var(--cyan-primary);
-  border: 1px solid rgba(0, 229, 255, 0.3);
+  background: #E3F3F5;
+  color: var(--teal-primary);
+  border: 1px solid #B2D9DD;
 }
 
 .badge-green {
-  background: rgba(53, 230, 165, 0.12);
-  color: var(--green-success);
-  border: 1px solid rgba(53, 230, 165, 0.3);
+  background: #E4F2EE;
+  color: var(--success);
+  border: 1px solid #B5D9CF;
 }
 
 .badge-amber {
-  background: rgba(255, 209, 102, 0.12);
-  color: var(--amber-warning);
-  border: 1px solid rgba(255, 209, 102, 0.3);
+  background: #FAF0E3;
+  color: var(--warning);
+  border: 1px solid #E8CFA0;
 }
 
 .badge-red {
-  background: rgba(255, 85, 112, 0.15);
-  color: var(--red-hazard);
-  border: 1px solid rgba(255, 85, 112, 0.4);
+  background: #FAE8E8;
+  color: var(--hazard);
+  border: 1px solid #E8B4B4;
 }
 
 .badge-purple {
-  background: rgba(179, 136, 255, 0.15);
+  background: #EDE9F5;
   color: var(--purple-accent);
-  border: 1px solid rgba(179, 136, 255, 0.4);
+  border: 1px solid #C9BEDF;
 }
 
-/* Glow & Pulse Keyframes */
+/* ── Pulse animations ── */
 @keyframes pulseGlow {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.95); }
+  50%       { opacity: 0.4; transform: scale(0.95); }
 }
 
 @keyframes sweepScan {
-  0% { transform: rotate(0deg); }
+  0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
 @keyframes radarPing {
-  0% { transform: scale(0.1); opacity: 1; }
+  0%   { transform: scale(0.1); opacity: 1; }
   100% { transform: scale(2.5); opacity: 0; }
 }
 
@@ -218,18 +224,16 @@ html, body, #root {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--cyan-primary);
-  box-shadow: 0 0 10px var(--cyan-primary);
+  background: var(--teal-primary);
   animation: pulseGlow 1.8s infinite ease-in-out;
 }
 
 .pulse-red {
-  background: var(--red-hazard);
-  box-shadow: 0 0 10px var(--red-hazard);
+  background: var(--hazard);
   animation: pulseGlow 1.2s infinite ease-in-out;
 }
 
-/* Button UI Components */
+/* ── Buttons ── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -241,45 +245,44 @@ html, body, #root {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   border: 1px solid transparent;
   outline: none;
   white-space: nowrap;
 }
 
+/* Primary action: filled teal */
 .btn-cyan {
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(0, 180, 216, 0.15));
-  color: var(--cyan-primary);
-  border-color: rgba(0, 229, 255, 0.4);
+  background: var(--teal-primary);
+  color: #ffffff;
+  border-color: var(--teal-primary);
 }
 .btn-cyan:hover {
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.4), rgba(0, 180, 216, 0.3));
-  border-color: var(--cyan-primary);
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
-  color: #ffffff;
+  background: var(--teal-deep);
+  border-color: var(--teal-deep);
 }
 
+/* Destructive: outlined by default, filled only for confirm actions */
 .btn-danger {
-  background: linear-gradient(135deg, rgba(255, 85, 112, 0.25), rgba(200, 30, 60, 0.15));
-  color: var(--red-hazard);
-  border-color: rgba(255, 85, 112, 0.4);
+  background: transparent;
+  color: var(--hazard);
+  border-color: var(--hazard);
 }
 .btn-danger:hover {
-  background: rgba(255, 85, 112, 0.4);
-  border-color: var(--red-hazard);
-  box-shadow: var(--shadow-red);
+  background: var(--hazard);
   color: #ffffff;
 }
 
+/* Secondary / ghost */
 .btn-outline {
   background: transparent;
-  color: var(--text-main);
+  color: var(--text-secondary);
   border-color: var(--border-soft);
 }
 .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-bright);
-  border-color: var(--text-muted);
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  border-color: #B8CBCD;
 }
 
 .btn-xs {
@@ -287,11 +290,11 @@ html, body, #root {
   font-size: 11px;
 }
 
-/* Form Controls */
+/* ── Form controls ── */
 .input-text {
-  background: var(--bg-inset);
+  background: var(--bg-surface);
   border: 1px solid var(--border-soft);
-  color: var(--text-bright);
+  color: var(--text-primary);
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
@@ -299,14 +302,14 @@ html, body, #root {
   outline: none;
 }
 .input-text:focus {
-  border-color: var(--cyan-primary);
-  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+  border-color: var(--teal-primary);
+  box-shadow: 0 0 0 3px rgba(8, 127, 140, 0.12);
 }
 
 .select-box {
-  background: var(--bg-inset);
+  background: var(--bg-surface);
   border: 1px solid var(--border-soft);
-  color: var(--text-bright);
+  color: var(--text-primary);
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   font-family: var(--font-sans);
@@ -315,11 +318,32 @@ html, body, #root {
   cursor: pointer;
 }
 .select-box option {
-  background: var(--bg-dark);
-  color: var(--text-bright);
+  background: var(--bg-surface);
+  color: var(--text-primary);
 }
 
-/* Print Stylesheet for PDF Export */
+/* ── Shared view-header (used across tabs) ── */
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* ── Global text utility classes ── */
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted     { color: var(--text-muted); }
+.text-faint     { color: var(--text-faint); }
+.text-bright    { color: var(--text-primary); }   /* legacy alias */
+.text-main      { color: var(--text-secondary); } /* legacy alias */
+.text-cyan      { color: var(--teal-primary); }
+.text-green     { color: var(--success); }
+.text-amber     { color: var(--warning); }
+.text-red       { color: var(--hazard); }
+.text-xs        { font-size: 11px; }
+.font-bold      { font-weight: 700; }
+
+/* ── Print stylesheet ── */
 @media print {
   body {
     background: #ffffff !important;
@@ -328,7 +352,7 @@ html, body, #root {
   .app-shell {
     display: block !important;
   }
-  .topbar, .nav, .inspector, .scanline-overlay, .btn {
+  .topbar, .nav, .inspector, .btn {
     display: none !important;
   }
   .main-content {

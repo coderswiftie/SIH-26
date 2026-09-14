@@ -61,7 +61,7 @@ export const Inspector = () => {
           <Target size={16} />
           <span>Target Lock: {selectedObject.id}</span>
         </div>
-        <span className={`badge ${selectedObject.type === 'Unknown' ? 'badge-amber' : 'badge-cyan'}`}>
+        <span className={`badge ${selectedObject.type === 'Unknown' ? 'badge-amber' : 'badge-teal'}`}>
           {selectedObject.type}
         </span>
       </div>
@@ -70,8 +70,8 @@ export const Inspector = () => {
         {/* Sonar Chip Renderer */}
         <div className="sonar-chip-container">
           <div className="sonar-chip-header">
-            <span className="font-mono text-xs text-muted">ACOUSTIC HIGH-RES CHIP (900 kHz)</span>
-            <span className="font-mono text-xs text-cyan">{selectedObject.confidence}% CONF</span>
+            <span className="font-mono text-xs text-muted">High-res acoustic chip (900 kHz)</span>
+            <span className="font-mono text-xs" style={{ color: 'var(--teal-primary)' }}>{selectedObject.confidence}% confidence</span>
           </div>
 
           <div className="chip-viewport">
@@ -92,27 +92,27 @@ export const Inspector = () => {
 
               {/* Object Highlighting */}
               {selectedObject.chipSvgType === 'pipeline' && (
-                <rect x="30" y="55" width="120" height="12" rx="3" fill="#00E5FF" filter="drop-shadow(0 0 8px #00E5FF)" />
+                <rect x="30" y="55" width="120" height="12" rx="3" fill="#13A7B5" />
               )}
               {selectedObject.chipSvgType === 'cylinder' && (
-                <rect x="75" y="45" width="50" height="25" rx="4" fill="#FF5570" filter="drop-shadow(0 0 10px #FF5570)" />
+                <rect x="75" y="45" width="50" height="25" rx="4" fill="#C84A4A" />
               )}
               {selectedObject.chipSvgType === 'mine' && (
-                <circle cx="95" cy="55" r="18" fill="#FF5570" filter="drop-shadow(0 0 12px #FF5570)" />
+                <circle cx="95" cy="55" r="18" fill="#C84A4A" />
               )}
               {selectedObject.chipSvgType === 'wreck' && (
-                <polygon points="50,65 140,40 120,75 40,75" fill="#00E5FF" opacity="0.85" />
+                <polygon points="50,65 140,40 120,75 40,75" fill="#13A7B5" opacity="0.75" />
               )}
               {selectedObject.chipSvgType === 'cable' && (
-                <path d="M 10 90 Q 90 40 190 70" stroke="#00E5FF" strokeWidth="4" fill="none" />
+                <path d="M 10 90 Q 90 40 190 70" stroke="#13A7B5" strokeWidth="3" fill="none" />
               )}
               {selectedObject.chipSvgType === 'mound' && (
-                <ellipse cx="95" cy="55" rx="35" ry="20" fill="#FFD166" opacity="0.7" />
+                <ellipse cx="95" cy="55" rx="35" ry="20" fill="#B9852E" opacity="0.55" />
               )}
 
               {/* Target Bounding Reticle */}
-              <rect x="35" y="25" width="130" height="85" fill="none" stroke={selectedObject.type === 'Unknown' ? '#FF5570' : '#00E5FF'} strokeWidth="1.5" strokeDasharray={selectedObject.type === 'Unknown' ? '4 4' : 'none'} />
-              <circle cx="100" cy="67" r="3" fill="#ffffff" />
+              <rect x="35" y="25" width="130" height="85" fill="none" stroke={selectedObject.type === 'Unknown' ? '#C84A4A' : '#13A7B5'} strokeWidth="1" strokeDasharray={selectedObject.type === 'Unknown' ? '4 4' : 'none'} />
+              <circle cx="100" cy="67" r="2" fill="rgba(255,255,255,0.5)" />
             </svg>
 
             <div className="chip-overlay-reticle">
@@ -125,15 +125,15 @@ export const Inspector = () => {
         {/* Primary Metadata Table */}
         <div className="meta-card">
           <div className="meta-row">
-            <span className="meta-key">CLASS LABEL</span>
-            <span className="meta-val font-mono text-bright">{selectedObject.class}</span>
+            <span className="meta-key">Classification</span>
+            <span className="meta-val font-mono" style={{ color: 'var(--text-primary)' }}>{selectedObject.class}</span>
           </div>
           <div className="meta-row">
-            <span className="meta-key">BATHYMETRIC DEPTH</span>
-            <span className="meta-val font-mono text-cyan">{selectedObject.depth} m</span>
+            <span className="meta-key">Depth</span>
+            <span className="meta-val font-mono" style={{ color: 'var(--teal-primary)' }}>{selectedObject.depth} m</span>
           </div>
           <div className="meta-row">
-            <span className="meta-key">HAZARD RISK SCORE</span>
+            <span className="meta-key">Hazard score</span>
             <span className="meta-val font-mono">
               <span className={`badge ${selectedObject.hazardScore > 75 ? 'badge-red' : selectedObject.hazardScore > 50 ? 'badge-amber' : 'badge-green'}`}>
                 {selectedObject.hazardScore} / 100
@@ -141,7 +141,7 @@ export const Inspector = () => {
             </span>
           </div>
           <div className="meta-row">
-            <span className="meta-key">STATUS BADGE</span>
+            <span className="meta-key">Status</span>
             <span className="meta-val font-mono">{selectedObject.status}</span>
           </div>
         </div>
@@ -149,8 +149,8 @@ export const Inspector = () => {
         {/* Physics-Fusion Evidence Verification Engine */}
         <div className="physics-section">
           <div className="section-title font-display">
-            <ShieldAlert size={14} className="text-cyan" />
-            <span>PHYSICS-EVIDENCE AUDIT ENGINE</span>
+            <ShieldAlert size={14} style={{ color: 'var(--teal-primary)' }} />
+            <span>Physics-evidence audit</span>
           </div>
 
           <div className="physics-card">
@@ -231,7 +231,7 @@ export const Inspector = () => {
 
         {/* Analyst Notes */}
         <div className="notes-card font-mono text-xs">
-          <span className="text-muted">ANALYST AUDIT REMARK:</span>
+          <span className="text-muted">Analyst note:</span>
           <p className="text-main">{selectedObject.notes}</p>
         </div>
 
@@ -241,7 +241,7 @@ export const Inspector = () => {
             className="btn btn-danger btn-full"
             onClick={() => confirmHazard(selectedObject.id)}
           >
-            <ShieldAlert size={14} /> CONFIRM HIGH HAZARD
+            <ShieldAlert size={14} /> Confirm high hazard
           </button>
 
           <div className="button-grid">
@@ -259,7 +259,7 @@ export const Inspector = () => {
             </button>
             <button 
               className="btn btn-amber"
-              style={{ background: 'rgba(255, 209, 102, 0.15)', color: 'var(--amber-warning)', borderColor: 'rgba(255, 209, 102, 0.4)' }}
+              style={{ background: 'rgba(185,133,46,0.1)', color: 'var(--warning)', borderColor: 'rgba(185,133,46,0.4)' }}
               onClick={() => escalateToCommand(selectedObject.id)}
             >
               <Send size={13} /> Escalate
@@ -270,12 +270,12 @@ export const Inspector = () => {
             className="btn btn-cyan btn-full"
             onClick={handleDownloadChip}
           >
-            <Download size={14} /> EXPORT HIGH-RES CHIP (PNG)
+            <Download size={14} /> Export high-res chip (PNG)
           </button>
 
           {reclassifyModalOpen && (
             <div className="reclassify-box">
-              <span className="font-mono text-xs text-bright">SELECT NEW TAXONOMY CLASS:</span>
+              <span className="font-mono text-xs" style={{ color: 'var(--text-primary)' }}>Select new taxonomy class:</span>
               <select 
                 className="select-box"
                 value={selectedNewClass}
@@ -295,7 +295,7 @@ export const Inspector = () => {
                   setReclassifyModalOpen(false);
                 }}
               >
-                APPLY RECLASSIFICATION
+                Apply reclassification
               </button>
             </div>
           )}
@@ -308,7 +308,7 @@ export const Inspector = () => {
           display: flex;
           flex-direction: column;
           border-left: 1px solid var(--border-soft);
-          background: rgba(6, 19, 28, 0.95);
+          background: var(--bg-surface);
         }
         .inspector-scroll-body {
           flex: 1;
@@ -330,7 +330,7 @@ export const Inspector = () => {
           text-align: center;
         }
         .sonar-chip-container {
-          background: var(--bg-inset);
+          background: #0A1C24;
           border: 1px solid var(--border-soft);
           border-radius: var(--radius-sm);
           padding: 10px;
@@ -363,8 +363,8 @@ export const Inspector = () => {
           color: var(--text-muted);
         }
         .meta-card {
-          background: var(--bg-inset);
-          border: 1px solid var(--border-dim);
+          background: var(--bg-surface-alt);
+          border: 1px solid var(--border-soft);
           border-radius: var(--radius-sm);
           padding: 10px;
           display: flex;
@@ -392,14 +392,14 @@ export const Inspector = () => {
         .section-title {
           font-size: 11px;
           font-weight: 700;
-          color: var(--text-bright);
+          color: var(--text-primary);
           letter-spacing: 0.5px;
           display: flex;
           align-items: center;
           gap: 6px;
         }
         .physics-card {
-          background: var(--bg-inset);
+          background: var(--bg-surface-alt);
           border: 1px solid var(--border-soft);
           border-radius: var(--radius-sm);
           padding: 10px;
@@ -429,8 +429,8 @@ export const Inspector = () => {
           margin-top: 4px;
         }
         .notes-card {
-          background: rgba(0, 229, 255, 0.03);
-          border: 1px solid var(--border-dim);
+          background: var(--bg-surface-alt);
+          border: 1px solid var(--border-soft);
           padding: 10px;
           border-radius: var(--radius-sm);
         }
@@ -449,8 +449,8 @@ export const Inspector = () => {
           gap: 6px;
         }
         .reclassify-box {
-          background: var(--bg-dark);
-          border: 1px solid var(--cyan-primary);
+          background: var(--bg-surface-alt);
+          border: 1px solid var(--teal-primary);
           padding: 10px;
           border-radius: var(--radius-sm);
           display: flex;

@@ -51,8 +51,8 @@ export const ReportsTab = () => {
     <div className="reports-tab">
       <div className="view-header">
         <div>
-          <h1 className="font-display text-bright">MISSION INTELLIGENCE SYNTHESIS REPORTS</h1>
-          <p className="font-mono text-muted text-xs">Autonomous Multi-Agent Evidence Compilation & Cryptographic Verification Audit</p>
+          <h1 className="font-display text-bright">Survey intelligence reports</h1>
+          <p className="font-mono text-muted text-xs">Automated evidence compilation and survey summary reports</p>
         </div>
 
         <button 
@@ -60,7 +60,7 @@ export const ReportsTab = () => {
           onClick={startReportSynthesis}
           disabled={generatingStage !== null && generatingStage !== 'COMPLETE'}
         >
-          <Zap size={14} /> GENERATE MISSION SYNTHESIS REPORT
+          <Zap size={14} /> Generate mission report
         </button>
       </div>
 
@@ -71,10 +71,10 @@ export const ReportsTab = () => {
             <Cpu size={32} className="animate-spin text-cyan" />
             <div className="loading-status font-mono">
               <span className="text-bright font-bold text-lg">
-                {generatingStage === 'ANALYZING' && 'STAGE 1/4: ANALYZING ACOUSTIC FRAMES...'}
-                {generatingStage === 'FUSING' && 'STAGE 2/4: FUSING MULTI-ASPECT EVIDENCE...'}
-                {generatingStage === 'CALCULATING' && 'STAGE 3/4: CALCULATING HAZARD INDEX...'}
-                {generatingStage === 'COMPILING' && 'STAGE 4/4: COMPILING SYNTHESIS BRIEFING...'}
+                {generatingStage === 'ANALYZING' && 'Stage 1/4: Analyzing acoustic frames...'}
+                {generatingStage === 'FUSING' && 'Stage 2/4: Fusing multi-aspect evidence...'}
+                {generatingStage === 'CALCULATING' && 'Stage 3/4: Calculating hazard index...'}
+                {generatingStage === 'COMPILING' && 'Stage 4/4: Compiling survey briefing...'}
               </span>
               <span className="text-muted text-xs">Processing {metrics.pingsProcessed.toLocaleString()} pings across {detections.length} targets...</span>
             </div>
@@ -100,10 +100,10 @@ export const ReportsTab = () => {
           ) : (
             <div className="report-placeholder panel">
               <FileText size={42} className="text-muted" />
-              <h3 className="font-display text-bright">No Report Generated Yet</h3>
-              <p className="font-mono text-xs text-muted">Click "GENERATE MISSION SYNTHESIS REPORT" to execute the 4-stage AI evidence compilation engine.</p>
+              <h3 className="font-display text-bright">No report generated yet</h3>
+              <p className="font-mono text-xs text-muted">Click "Generate mission report" to compile acoustic detections and survey evidence.</p>
               <button className="btn btn-cyan" onClick={startReportSynthesis}>
-                <Zap size={14} /> GENERATE NOW
+                <Zap size={14} /> Generate report
               </button>
             </div>
           )}
@@ -125,8 +125,8 @@ export const ReportsTab = () => {
           display: flex;
           flex-direction: column;
           gap: 14px;
-          background: rgba(0, 229, 255, 0.05);
-          border: 1px solid var(--cyan-primary);
+          background: #E6F4F5;
+          border: 1px solid var(--teal-primary);
         }
         .loading-content {
           display: flex;
@@ -140,15 +140,14 @@ export const ReportsTab = () => {
         }
         .loading-progress-bar {
           height: 6px;
-          background: var(--bg-inset);
+          background: var(--bg-surface-alt);
           border-radius: var(--radius-xs);
           overflow: hidden;
           border: 1px solid var(--border-dim);
         }
         .progress-fill {
           height: 100%;
-          background: var(--cyan-primary);
-          box-shadow: 0 0 12px var(--cyan-primary);
+          background: var(--teal-primary);
           transition: width 0.8s ease;
         }
         .reports-grid {

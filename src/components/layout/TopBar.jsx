@@ -15,7 +15,7 @@ export const TopBar = () => {
           </div>
           <div className="brand-text">
             <span className="brand-name font-display">Cyan<span>O</span></span>
-            <span className="brand-sub font-mono">DEEP OCEAN INTEL v2.4</span>
+            <span className="brand-sub font-mono">Deep-ocean survey intelligence</span>
           </div>
         </div>
 
@@ -24,17 +24,17 @@ export const TopBar = () => {
         <div className="mission-info">
           <div className="info-item">
             <Shield size={13} className="info-icon" />
-            <span className="info-label">MISSION:</span>
+            <span className="info-label">Mission:</span>
             <span className="info-val font-mono">PACIFIC-ABYSS-09</span>
           </div>
           <div className="info-item">
             <Waves size={13} className="info-icon" />
-            <span className="info-label">VESSEL:</span>
+            <span className="info-label">Vessel:</span>
             <span className="info-val">R/V Oceanus Explorer</span>
           </div>
           <div className="info-item">
             <Compass size={13} className="info-icon" />
-            <span className="info-label">SECTOR:</span>
+            <span className="info-label">Sector:</span>
             <span className="info-val font-mono">Sector 7-B (Mariana Ridge)</span>
           </div>
         </div>
@@ -43,12 +43,12 @@ export const TopBar = () => {
       <div className="topbar-right">
         <div className="sonar-badge badge badge-cyan">
           <Radio size={12} className="animate-spin-slow" />
-          <span>SAS-X4 APERTURE ({sonarFrequency})</span>
+          <span>SAS-X4 · {sonarFrequency}</span>
         </div>
 
         <div className="live-status">
           <div className="pulse-indicator"></div>
-          <span className="live-text font-mono">LIVE INGESTION (48 pings/s)</span>
+          <span className="live-text font-mono">Live · 48 pings/s</span>
         </div>
 
         <div className="utc-clock font-mono">
@@ -62,7 +62,7 @@ export const TopBar = () => {
           title={audioMuted ? "Unmute Sonar Telemetry Audio" : "Mute Sonar Telemetry Audio"}
         >
           {audioMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-          <span>{audioMuted ? "MUTED" : "ACOUSTIC FEED"}</span>
+          <span>{audioMuted ? "Muted" : "Audio on"}</span>
         </button>
       </div>
 
@@ -72,9 +72,9 @@ export const TopBar = () => {
           align-items: center;
           justify-content: space-between;
           padding: 0 20px;
-          background: rgba(3, 15, 23, 0.95);
+          background: var(--bg-surface);
           border-bottom: 1px solid var(--border-soft);
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+          box-shadow: 0 1px 4px rgba(0,0,0,0.06);
           z-index: 100;
         }
         .topbar-left, .topbar-right {
@@ -91,25 +91,24 @@ export const TopBar = () => {
           width: 28px;
           height: 28px;
           border-radius: 50%;
-          border: 2px solid var(--cyan-primary);
+          border: 2px solid var(--teal-primary);
           position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba(0, 229, 255, 0.1);
+          background: #E6F4F5;
         }
         .sonar-inner-ring {
           position: absolute;
           inset: 4px;
-          border: 1px dashed rgba(0, 229, 255, 0.5);
+          border: 1px dashed var(--teal-bright);
           border-radius: 50%;
         }
         .sonar-dot {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: var(--cyan-primary);
-          box-shadow: 0 0 8px var(--cyan-primary);
+          background: var(--teal-primary);
         }
         .brand-text {
           display: flex;
@@ -117,17 +116,16 @@ export const TopBar = () => {
         }
         .brand-name {
           font-size: 16px;
-          font-weight: 800;
-          letter-spacing: 1px;
-          color: var(--text-bright);
+          font-weight: 700;
+          color: var(--text-primary);
           line-height: 1.1;
         }
         .brand-name span {
-          color: var(--cyan-primary);
+          color: var(--teal-primary);
         }
         .brand-sub {
           font-size: 9px;
-          letter-spacing: 1px;
+          letter-spacing: 0.8px;
           color: var(--text-muted);
         }
         .divider-vert {
@@ -145,33 +143,33 @@ export const TopBar = () => {
           align-items: center;
           gap: 6px;
           font-size: 12px;
-          color: var(--text-muted);
+          color: var(--text-secondary);
         }
         .info-icon {
-          color: var(--cyan-primary);
-          opacity: 0.8;
+          color: var(--teal-primary);
+          opacity: 0.9;
         }
         .info-label {
           font-weight: 600;
-          color: var(--text-faint);
+          color: var(--text-muted);
           font-size: 11px;
         }
         .info-val {
-          color: var(--text-bright);
+          color: var(--text-primary);
           font-weight: 500;
         }
         .live-status {
           display: flex;
           align-items: center;
           gap: 8px;
-          background: rgba(0, 229, 255, 0.06);
+          background: #E6F4F5;
           padding: 4px 10px;
           border-radius: var(--radius-xs);
-          border: 1px solid var(--border-dim);
+          border: 1px solid #B2D9DD;
         }
         .live-text {
           font-size: 11px;
-          color: var(--cyan-primary);
+          color: var(--teal-primary);
           font-weight: 600;
         }
         .utc-clock {
@@ -179,11 +177,11 @@ export const TopBar = () => {
           align-items: center;
           gap: 6px;
           font-size: 12px;
-          color: var(--text-bright);
-          background: var(--bg-inset);
+          color: var(--text-primary);
+          background: var(--bg-surface-alt);
           padding: 4px 10px;
           border-radius: var(--radius-xs);
-          border: 1px solid var(--border-dim);
+          border: 1px solid var(--border-soft);
         }
         .animate-spin-slow {
           animation: spin 10s linear infinite;

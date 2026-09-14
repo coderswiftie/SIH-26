@@ -37,7 +37,6 @@ export function App() {
     <MissionProvider>
       <div className="app-shell">
         <Toast />
-        <div className="scanline-overlay"></div>
         <TopBar />
         <div className="body-layout">
           <LeftNav />

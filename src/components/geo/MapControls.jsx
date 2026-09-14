@@ -13,7 +13,7 @@ export const MapControls = ({ activeLayer, setActiveLayer }) => {
       <div className="panel-header">
         <div className="panel-title">
           <Layers size={14} />
-          <span>BATHYMETRIC LAYER SWITCHER</span>
+          <span>Bathymetric layers</span>
         </div>
       </div>
 

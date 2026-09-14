@@ -10,7 +10,7 @@ export const HazardRankTable = () => {
       <div className="panel-header">
         <div className="panel-title">
           <ShieldAlert size={16} />
-          <span>PRIORITY BENTHIC HAZARD RANKING & RECOMMENDATIONS</span>
+          <span>Priority benthic hazards</span>
         </div>
       </div>
 
@@ -18,12 +18,12 @@ export const HazardRankTable = () => {
         <table className="hazard-table font-mono">
           <thead>
             <tr>
-              <th>HAZARD ID</th>
-              <th>TARGET LINK</th>
-              <th>PRIORITY</th>
-              <th>HAZARD SCORE</th>
-              <th>ECOLOGICAL SENSITIVITY</th>
-              <th>RECOMMENDED ACTION</th>
+              <th>Hazard ID</th>
+              <th>Target link</th>
+              <th>Priority</th>
+              <th>Hazard score</th>
+              <th>Ecological sensitivity</th>
+              <th>Recommended action</th>
             </tr>
           </thead>
           <tbody>
@@ -68,24 +68,33 @@ export const HazardRankTable = () => {
           font-size: 11px;
         }
         .hazard-table th {
-          background: rgba(0, 229, 255, 0.04);
+          background: var(--bg-surface-alt);
           color: var(--text-muted);
           padding: 8px 12px;
           border-bottom: 1px solid var(--border-soft);
           font-size: 10px;
+          font-weight: 600;
         }
         .hazard-table td {
           padding: 8px 12px;
           border-bottom: 1px solid var(--border-dim);
+          color: var(--text-primary);
         }
         .hazard-row {
           cursor: pointer;
           transition: background 0.15s ease;
         }
         .hazard-row:hover {
-          background: rgba(0, 229, 255, 0.05);
+          background: #EEF6F7;
         }
-        .text-red { color: var(--red-hazard); }
+        .row-selected {
+          background: #E3F3F5 !important;
+          border-left: 3px solid var(--teal-primary);
+        }
+        .text-red   { color: var(--hazard); }
+        .text-cyan  { color: var(--teal-primary); }
+        .text-bright{ color: var(--text-primary); }
+        .text-muted { color: var(--text-muted); }
       `}</style>
     </div>
   );

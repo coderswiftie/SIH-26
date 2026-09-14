@@ -5,53 +5,56 @@ import { Compass, Radio, Target, ShieldAlert, Award, Activity } from 'lucide-rea
 export const KpiCards = () => {
   const { metrics, jumpToFilteredView } = useMission();
 
+  // Semantic color: only apply when the value is actually signalling an issue
+  const flaggedColor = metrics.flaggedQueueCount > 0 ? 'var(--warning)' : 'var(--teal-deep)';
+
   const cards = [
     {
-      title: "SURVEYED AREA",
+      title: "Surveyed Area",
       value: `${metrics.surveyedAreaKm2} km²`,
       sub: "Swath Width: 450m",
       icon: Compass,
-      color: "var(--cyan-primary)",
+      color: "var(--teal-deep)",
       onClick: () => jumpToFilteredView('geo')
     },
     {
-      title: "PINGS PROCESSED",
+      title: "Pings Processed",
       value: metrics.pingsProcessed.toLocaleString(),
       sub: "SAS Aperture 900 kHz",
       icon: Radio,
-      color: "var(--blue-accent)",
+      color: "var(--teal-deep)",
       onClick: () => jumpToFilteredView('overview')
     },
     {
-      title: "TOTAL DETECTIONS",
+      title: "Total Detections",
       value: `${metrics.totalDetections} Objects`,
       sub: `${metrics.knownObjects} Known / ${metrics.unknownAnomalies} Unknown`,
       icon: Target,
-      color: "var(--green-success)",
+      color: "var(--teal-deep)",
       onClick: () => jumpToFilteredView('detection', { typeFilter: 'ALL', statusFilter: 'ALL' })
     },
     {
-      title: "FLAGGED ANOMALIES",
+      title: "Flagged Anomalies",
       value: `${metrics.flaggedQueueCount} Flagged`,
       sub: "Physics Audit Pending",
       icon: ShieldAlert,
-      color: "var(--amber-warning)",
+      color: flaggedColor,
       onClick: () => jumpToFilteredView('detection', { statusFilter: 'PENDING_REVIEW' })
     },
     {
-      title: "DATA QUALITY SCORE",
+      title: "Data Quality Score",
       value: `${metrics.dataQualityScore}%`,
       sub: `SNR: ${metrics.snrDb} dB`,
       icon: Activity,
-      color: "var(--purple-accent)",
+      color: "var(--teal-deep)",
       onClick: () => jumpToFilteredView('overview')
     },
     {
-      title: "MISSION CONFIDENCE",
+      title: "Mission Confidence",
       value: `${metrics.missionConfidence}%`,
       sub: "Zero False Alarms Flagged",
       icon: Award,
-      color: "var(--cyan-primary)",
+      color: "var(--teal-deep)",
       onClick: () => jumpToFilteredView('reports')
     }
   ];
@@ -61,19 +64,19 @@ export const KpiCards = () => {
       {cards.map((card, idx) => {
         const Icon = card.icon;
         return (
-          <div 
-            key={idx} 
+          <div
+            key={idx}
             className="kpi-card panel"
             onClick={card.onClick}
           >
             <div className="kpi-top">
-              <span className="kpi-title font-mono">{card.title}</span>
+              <span className="kpi-title">{card.title}</span>
               <Icon size={16} style={{ color: card.color }} />
             </div>
-            <div className="kpi-val font-mono" style={{ color: card.color }}>
+            <div className="kpi-val" style={{ color: card.color }}>
               {card.value}
             </div>
-            <div className="kpi-sub font-mono">{card.sub}</div>
+            <div className="kpi-sub">{card.sub}</div>
           </div>
         );
       })}
@@ -86,19 +89,17 @@ export const KpiCards = () => {
           margin-bottom: 14px;
         }
         .kpi-card {
-          padding: 12px;
+          padding: 14px;
           display: flex;
           flex-direction: column;
           gap: 4px;
-          background: rgba(10, 27, 38, 0.6);
           cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
         }
         .kpi-card:hover {
-          border-color: var(--cyan-primary);
-          box-shadow: 0 0 16px rgba(0, 229, 255, 0.25);
-          transform: translateY(-2px);
-          background: rgba(14, 36, 51, 0.8);
+          border-color: var(--teal-primary);
+          box-shadow: 0 2px 10px rgba(8, 127, 140, 0.12);
+          transform: translateY(-1px);
         }
         .kpi-top {
           display: flex;
@@ -106,17 +107,18 @@ export const KpiCards = () => {
           align-items: center;
         }
         .kpi-title {
-          font-size: 10px;
-          letter-spacing: 0.5px;
+          font-size: 11px;
+          font-weight: 500;
           color: var(--text-muted);
         }
         .kpi-val {
-          font-size: 16px;
+          font-family: var(--font-mono);
+          font-size: 15px;
           font-weight: 700;
-          margin-top: 2px;
+          margin-top: 4px;
         }
         .kpi-sub {
-          font-size: 9.5px;
+          font-size: 10px;
           color: var(--text-faint);
         }
       `}</style>

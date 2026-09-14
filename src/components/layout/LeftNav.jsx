@@ -15,7 +15,7 @@ export const LeftNav = () => {
 
   return (
     <aside className="left-nav">
-      <div className="nav-section-label font-mono">NAVIGATION CONSOLE</div>
+      <div className="nav-section-label font-mono">Navigation</div>
       
       <nav className="nav-list">
         {navItems.map(item => {
@@ -41,7 +41,7 @@ export const LeftNav = () => {
       </nav>
 
       <div className="nav-bottom-status panel">
-        <div className="status-header font-mono">SYSTEM TELEMETRY</div>
+        <div className="status-header font-mono">System status</div>
         <div className="telemetry-grid">
           <div className="telem-row">
             <Cpu size={12} />
@@ -63,7 +63,7 @@ export const LeftNav = () => {
 
       <style>{`
         .left-nav {
-          background: rgba(6, 19, 28, 0.9);
+          background: var(--bg-surface);
           border-right: 1px solid var(--border-soft);
           display: flex;
           flex-direction: column;
@@ -73,14 +73,15 @@ export const LeftNav = () => {
         }
         .nav-section-label {
           font-size: 10px;
-          letter-spacing: 1.5px;
-          color: var(--text-faint);
+          letter-spacing: 0.8px;
+          color: var(--text-muted);
           padding: 0 8px;
+          text-transform: uppercase;
         }
         .nav-list {
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 4px;
           flex: 1;
         }
         .nav-btn {
@@ -88,41 +89,31 @@ export const LeftNav = () => {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 11px 14px;
+          padding: 10px 14px;
           border-radius: var(--radius-sm);
           background: transparent;
           border: 1px solid transparent;
-          color: var(--text-muted);
+          color: var(--text-secondary);
           font-size: 13px;
           font-weight: 500;
           cursor: pointer;
-          transition: all 0.2s ease;
-          overflow: hidden;
+          transition: background 0.15s ease, color 0.15s ease;
           text-align: left;
         }
         .nav-btn:hover {
-          color: var(--text-bright);
-          background: rgba(0, 229, 255, 0.04);
+          color: var(--text-primary);
+          background: var(--bg-surface-alt);
         }
         .nav-btn.active {
-          color: var(--cyan-primary);
-          background: linear-gradient(90deg, rgba(0, 229, 255, 0.15), rgba(0, 229, 255, 0.02));
-          border-color: rgba(0, 229, 255, 0.3);
+          color: var(--teal-primary);
+          background: #E6F4F5;
+          border-color: transparent;
           font-weight: 600;
-          box-shadow: inset 2px 0 0 var(--cyan-primary);
+          box-shadow: inset 3px 0 0 var(--teal-primary);
         }
+        /* The glow-beam element stays in DOM but is hidden in light theme */
         .nav-glow-beam {
           display: none;
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 3px;
-          background: var(--cyan-primary);
-          box-shadow: 0 0 10px var(--cyan-primary);
-        }
-        .nav-btn.active .nav-glow-beam {
-          display: block;
         }
         .nav-icon {
           flex-shrink: 0;
@@ -136,15 +127,18 @@ export const LeftNav = () => {
         }
         .nav-bottom-status {
           padding: 12px;
-          background: rgba(4, 14, 22, 0.8);
-          border: 1px solid var(--border-dim);
+          background: var(--bg-surface-alt);
+          border: 1px solid var(--border-soft);
+          border-radius: var(--radius-sm);
+          box-shadow: none;
         }
         .status-header {
           font-size: 10px;
-          letter-spacing: 1px;
-          color: var(--text-faint);
+          letter-spacing: 0.8px;
+          color: var(--text-muted);
           margin-bottom: 10px;
           font-weight: 700;
+          text-transform: uppercase;
         }
         .telemetry-grid {
           display: flex;
@@ -156,17 +150,17 @@ export const LeftNav = () => {
           align-items: center;
           gap: 8px;
           font-size: 11px;
-          color: var(--text-muted);
+          color: var(--text-secondary);
         }
         .telem-label {
           flex: 1;
         }
         .telem-val {
-          color: var(--text-bright);
+          color: var(--text-primary);
           font-weight: 600;
         }
         .text-green {
-          color: var(--green-success);
+          color: var(--success);
         }
       `}</style>
     </aside>

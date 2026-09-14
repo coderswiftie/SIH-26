@@ -45,8 +45,8 @@ export const DetectionFeedTab = () => {
     <div className="detection-feed-tab">
       <div className="view-header">
         <div>
-          <h1 className="font-display text-bright">DETECTION LOG FEED</h1>
-          <p className="font-mono text-muted text-xs">Acoustic Targets Ingested by YOLO11 & Autonomous AI Anomaly Detectors</p>
+          <h1 className="font-display text-bright">Detection log</h1>
+          <p className="font-mono text-muted text-xs">Acoustic detections from YOLO11 and anomaly detection models</p>
         </div>
       </div>
 
@@ -56,7 +56,7 @@ export const DetectionFeedTab = () => {
           <Search size={14} className="search-icon text-muted" />
           <input 
             type="text" 
-            placeholder="Search Target ID, Class, or Description..."
+            placeholder="Search target ID, classification, or notes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="input-text font-mono"
@@ -65,34 +65,34 @@ export const DetectionFeedTab = () => {
 
         <div className="filter-group">
           <Filter size={13} className="text-muted" />
-          <span className="font-mono text-xs text-muted">TYPE:</span>
+          <span className="font-mono text-xs text-muted">Type:</span>
           <select 
             className="select-box"
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
           >
-            <option value="ALL">All Types</option>
-            <option value="Known">YOLO11 Knowns</option>
-            <option value="Unknown">Anomaly Unknowns</option>
+            <option value="ALL">All types</option>
+            <option value="Known">YOLO11 known</option>
+            <option value="Unknown">Anomaly unknown</option>
           </select>
         </div>
 
         <div className="filter-group">
-          <span className="font-mono text-xs text-muted">STATUS:</span>
+          <span className="font-mono text-xs text-muted">Status:</span>
           <select 
             className="select-box"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            <option value="ALL">All Statuses</option>
+            <option value="ALL">All statuses</option>
             <option value="CONFIRMED">Confirmed</option>
-            <option value="PENDING_REVIEW">Pending Review</option>
-            <option value="HIGH_HAZARD">High Hazard</option>
+            <option value="PENDING_REVIEW">Pending review</option>
+            <option value="HIGH_HAZARD">High hazard</option>
           </select>
         </div>
 
         <div className="filter-group">
-          <span className="font-mono text-xs text-muted">MIN CONF: {minConfidence}%</span>
+          <span className="font-mono text-xs text-muted">Min confidence: {minConfidence}%</span>
           <input 
             type="range" 
             min="50" 
@@ -111,14 +111,14 @@ export const DetectionFeedTab = () => {
             <thead>
               <tr className="font-mono">
                 <th>ID</th>
-                <th>CLASSIFICATION</th>
-                <th>TYPE</th>
-                <th>CONFIDENCE</th>
-                <th>DEPTH</th>
-                <th>COORDINATES (LAT / LNG)</th>
-                <th>HAZARD SCORE</th>
-                <th>STATUS</th>
-                <th>ACTIONS</th>
+                <th>Classification</th>
+                <th>Type</th>
+                <th>Confidence</th>
+                <th>Depth</th>
+                <th>Coordinates</th>
+                <th>Hazard score</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -216,7 +216,7 @@ export const DetectionFeedTab = () => {
           gap: 8px;
         }
         .conf-slider {
-          accent-color: var(--cyan-primary);
+          accent-color: var(--teal-primary);
           width: 90px;
           cursor: pointer;
         }
@@ -238,12 +238,12 @@ export const DetectionFeedTab = () => {
           font-size: 12px;
         }
         .detection-table th {
-          background: rgba(0, 229, 255, 0.04);
+          background: var(--bg-surface-alt);
           color: var(--text-muted);
           padding: 10px 14px;
           border-bottom: 1px solid var(--border-soft);
           font-size: 10.5px;
-          letter-spacing: 0.5px;
+          font-weight: 600;
         }
         .detection-table td {
           padding: 11px 14px;
@@ -254,11 +254,11 @@ export const DetectionFeedTab = () => {
           transition: background 0.15s ease;
         }
         .table-row:hover {
-          background: rgba(0, 229, 255, 0.05);
+          background: #EEF6F7;
         }
         .row-selected {
-          background: rgba(0, 229, 255, 0.12) !important;
-          border-left: 3px solid var(--cyan-primary);
+          background: #E3F3F5 !important;
+          border-left: 3px solid var(--teal-primary);
         }
         .row-actions {
           display: flex;
