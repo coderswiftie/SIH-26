@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useMission } from '../../context/MissionContext';
 import { sonarAudio } from '../../utils/audio';
-import { Maximize2, Palette, Sliders, Zap } from 'lucide-react';
+import { Palette, Sliders, Zap, Radio } from 'lucide-react';
 
 export const SonarViewer = () => {
   const canvasRef = useRef(null);
@@ -42,19 +42,24 @@ export const SonarViewer = () => {
       const width = canvas.width;
       const height = canvas.height;
       const colors = getColors();
+      const isHighFreq = sonarFrequency === '900kHz';
 
       // Clear Canvas Background
       ctx.fillStyle = colors.bg;
       ctx.fillRect(0, 0, width, height);
 
-      // Draw Synthetic Waterfall Sonar Texture
+      // Draw Synthetic Waterfall Sonar Texture scaled by sonarFrequency
       const gainMultiplier = gain / 100;
       ctx.fillStyle = colors.grid;
-      for (let i = 0; i < 60; i++) {
+      const particleCount = isHighFreq ? 120 : 50;
+      const particleMaxWidth = isHighFreq ? 60 : 120;
+      const particleMaxHeight = isHighFreq ? 1.5 : 3;
+
+      for (let i = 0; i < particleCount; i++) {
         const rx = Math.random() * width;
         const ry = Math.random() * height;
-        const rw = Math.random() * 80 * gainMultiplier;
-        const rh = Math.random() * 2;
+        const rw = Math.random() * particleMaxWidth * gainMultiplier;
+        const rh = Math.random() * particleMaxHeight;
         ctx.fillRect(rx, ry, rw, rh);
       }
 
@@ -77,8 +82,9 @@ export const SonarViewer = () => {
       ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height);
       ctx.stroke();
 
-      // Update & Draw Sweeping Radar Beam
-      beamAngleRef.current = (beamAngleRef.current + 0.015) % (Math.PI * 2);
+      // Update & Draw Sweeping Radar Beam (Speed scaled by sonarFrequency)
+      const beamSpeed = isHighFreq ? 0.02 : 0.012;
+      beamAngleRef.current = (beamAngleRef.current + beamSpeed) % (Math.PI * 2);
       const angle = beamAngleRef.current;
 
       ctx.save();
@@ -181,7 +187,7 @@ export const SonarViewer = () => {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [detections, selectedObjectId, sonarPalette, gain]);
+  }, [detections, selectedObjectId, sonarPalette, sonarFrequency, gain]);
 
   // Click Handler for Canvas Target Selection
   const handleCanvasClick = (e) => {
@@ -223,6 +229,24 @@ export const SonarViewer = () => {
             + INJECT ANOMALY
           </button>
 
+          {/* Segmented Frequency Toggle Pill */}
+          <div className="freq-segmented-control font-mono">
+            <button 
+              className={`freq-btn ${sonarFrequency === '450kHz' ? 'active' : ''}`}
+              onClick={() => setSonarFrequency('450kHz')}
+              title="450 kHz Low-Frequency Swath Mode"
+            >
+              450kHz
+            </button>
+            <button 
+              className={`freq-btn ${sonarFrequency === '900kHz' ? 'active' : ''}`}
+              onClick={() => setSonarFrequency('900kHz')}
+              title="900 kHz High-Resolution Mode"
+            >
+              900kHz
+            </button>
+          </div>
+
           <div className="control-group">
             <Palette size={12} className="text-muted" />
             <select 
@@ -261,10 +285,10 @@ export const SonarViewer = () => {
         />
 
         <div className="canvas-telemetry-overlay font-mono">
-          <div className="telem-chip">RANGE: 250m</div>
+          <div className="telem-chip">RANGE: {sonarFrequency === '900kHz' ? '150m' : '300m'}</div>
+          <div className="telem-chip">FREQ: {sonarFrequency}</div>
           <div className="telem-chip">SPEED: 4.2 KTS</div>
-          <div className="telem-chip">SWATH: 450m</div>
-          <div className="telem-chip">ALT: 18.4m</div>
+          <div className="telem-chip">SWATH: {sonarFrequency === '900kHz' ? '300m' : '600m'}</div>
         </div>
 
         <div className="legend-overlay font-mono">
@@ -281,7 +305,32 @@ export const SonarViewer = () => {
         .sonar-controls {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 10px;
+        }
+        .freq-segmented-control {
+          display: flex;
+          background: var(--bg-inset);
+          border: 1px solid var(--border-soft);
+          border-radius: var(--radius-xs);
+          padding: 2px;
+          gap: 2px;
+        }
+        .freq-btn {
+          background: transparent;
+          border: 1px solid transparent;
+          color: var(--text-muted);
+          padding: 2px 8px;
+          font-size: 10.5px;
+          font-weight: 600;
+          cursor: pointer;
+          border-radius: 2px;
+          transition: all 0.2s ease;
+        }
+        .freq-btn.active {
+          background: rgba(0, 229, 255, 0.18);
+          color: var(--cyan-primary);
+          border-color: rgba(0, 229, 255, 0.4);
+          box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
         }
         .control-group {
           display: flex;

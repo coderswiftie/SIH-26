@@ -17,6 +17,18 @@ export const MissionProvider = ({ children }) => {
   const [sonarFrequency, setSonarFrequency] = useState('900kHz');
   const [utcTime, setUtcTime] = useState(new Date().toISOString().substring(0, 19).replace('T', ' ') + ' UTC');
 
+  const [typeFilter, setTypeFilter] = useState('ALL');
+  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [pendingFeedFilter, setPendingFeedFilter] = useState(null);
+
+  const jumpToFilteredView = (tab, filter = {}) => {
+    if (filter.typeFilter !== undefined) setTypeFilter(filter.typeFilter);
+    if (filter.statusFilter !== undefined) setStatusFilter(filter.statusFilter);
+    setPendingFeedFilter(filter);
+    setActiveTab(tab);
+    sonarAudio.playTick();
+  };
+
   // Live UTC Clock & Telemetry Simulation
   useEffect(() => {
     const timer = setInterval(() => {
@@ -80,6 +92,30 @@ export const MissionProvider = ({ children }) => {
       return item;
     }));
     sonarAudio.playTick();
+  };
+
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 2500);
+  };
+
+  const escalateToCommand = (id) => {
+    setDetections(prev => prev.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          status: 'ESCALATED',
+          escalatedAt: new Date().toISOString()
+        };
+      }
+      return item;
+    }));
+    sonarAudio.playPing(2400, 0.4);
+    showToast(`Target ${id} escalated to command`, 'warning');
   };
 
   const dismissObject = (id) => {
@@ -185,8 +221,19 @@ export const MissionProvider = ({ children }) => {
         confirmHazard,
         reclassifyObject,
         dismissObject,
+        escalateToCommand,
         updatePhysicsStatus,
-        injectSimulatedAnomaly
+        injectSimulatedAnomaly,
+        toast,
+        setToast,
+        showToast,
+        typeFilter,
+        setTypeFilter,
+        statusFilter,
+        setStatusFilter,
+        pendingFeedFilter,
+        setPendingFeedFilter,
+        jumpToFilteredView
       }}
     >
       {children}

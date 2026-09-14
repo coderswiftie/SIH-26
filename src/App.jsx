@@ -8,6 +8,7 @@ import { DetectionFeedTab } from './components/detection/DetectionFeedTab';
 import { InvestigationTab } from './components/investigation/InvestigationTab';
 import { GeoMapTab } from './components/geo/GeoMapTab';
 import { ReportsTab } from './components/reports/ReportsTab';
+import { Toast } from './components/layout/Toast';
 
 const MainContent = () => {
   const { activeTab } = useMission();
@@ -35,6 +36,7 @@ export function App() {
   return (
     <MissionProvider>
       <div className="app-shell">
+        <Toast />
         <div className="scanline-overlay"></div>
         <TopBar />
         <div className="body-layout">

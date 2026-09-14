@@ -1,12 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useMission } from '../../context/MissionContext';
 import { MapControls } from './MapControls';
 import { HazardRankTable } from './HazardRankTable';
-import { Map, Compass, Navigation, Maximize } from 'lucide-react';
+import { Compass, Maximize } from 'lucide-react';
 
 export const GeoMapTab = () => {
   const { detections, selectedObjectId, selectObject } = useMission();
   const [activeLayer, setActiveLayer] = useState('hazard');
+
+  // Interactive ViewBox Zoom & Pan State
+  const [viewBox, setViewBox] = useState({ x: 0, y: 0, w: 800, h: 440 });
+  const svgRef = useRef(null);
+  const isDraggingRef = useRef(false);
+  const startPosRef = useRef({ x: 0, y: 0 });
+  const hasDraggedRef = useRef(false);
+
+  const resetZoom = () => {
+    setViewBox({ x: 0, y: 0, w: 800, h: 440 });
+  };
+
+  const handleWheel = (e) => {
+    e.preventDefault();
+    const svg = svgRef.current;
+    if (!svg) return;
+
+    const rect = svg.getBoundingClientRect();
+    const zoomFactor = e.deltaY < 0 ? 0.88 : 1.14;
+
+    const mouseX = ((e.clientX - rect.left) / rect.width) * viewBox.w + viewBox.x;
+    const mouseY = ((e.clientY - rect.top) / rect.height) * viewBox.h + viewBox.y;
+
+    setViewBox(prev => {
+      // Clamped range: 200x110 (400% zoom in) to 2400x1320 (33% zoom out)
+      const newW = Math.min(2400, Math.max(200, prev.w * zoomFactor));
+      const newH = Math.min(1320, Math.max(110, prev.h * zoomFactor));
+
+      const newX = mouseX - ((mouseX - prev.x) / prev.w) * newW;
+      const newY = mouseY - ((mouseY - prev.y) / prev.h) * newH;
+
+      return { x: newX, y: newY, w: newW, h: newH };
+    });
+  };
+
+  const handleMouseDown = (e) => {
+    isDraggingRef.current = true;
+    hasDraggedRef.current = false;
+    startPosRef.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDraggingRef.current || !svgRef.current) return;
+
+    const rect = svgRef.current.getBoundingClientRect();
+    const dx = e.clientX - startPosRef.current.x;
+    const dy = e.clientY - startPosRef.current.y;
+
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      hasDraggedRef.current = true;
+    }
+
+    const scaleX = viewBox.w / rect.width;
+    const scaleY = viewBox.h / rect.height;
+
+    setViewBox(prev => ({
+      ...prev,
+      x: prev.x - dx * scaleX,
+      y: prev.y - dy * scaleY
+    }));
+
+    startPosRef.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseUp = () => {
+    isDraggingRef.current = false;
+  };
+
+  // Attach wheel listener as non-passive so e.preventDefault() actually works.
+  // React attaches JSX event handlers as passive by default, which silently
+  // ignores preventDefault() for wheel events.
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    svg.addEventListener('wheel', handleWheel, { passive: false });
+    return () => svg.removeEventListener('wheel', handleWheel);
+  });
 
   return (
     <div className="geo-map-tab">
@@ -25,11 +102,32 @@ export const GeoMapTab = () => {
               <Compass size={16} />
               <span>SPATIAL BATHYMETRY & SWATH TRACK (LAT: 11°22'N / LNG: 142°12'E)</span>
             </div>
-            <span className="badge badge-cyan font-mono">CONTOUR STEP: 50m</span>
+            
+            <div className="map-header-controls font-mono">
+              <button 
+                className="btn btn-xs btn-outline" 
+                onClick={resetZoom}
+                title="Reset Bathymetry Map Zoom & Pan"
+              >
+                <Maximize size={12} /> RESET ZOOM
+              </button>
+              <span className="badge badge-cyan">
+                ZOOM: {Math.round((800 / viewBox.w) * 100)}%
+              </span>
+            </div>
           </div>
 
           <div className="chart-viewport">
-            <svg viewBox="0 0 800 440" className="bathymetry-svg">
+            <svg 
+              ref={svgRef}
+              viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`} 
+              className="bathymetry-svg"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              style={{ cursor: isDraggingRef.current ? 'grabbing' : 'grab' }}
+            >
               <defs>
                 <linearGradient id="depthGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#04121c" />
@@ -53,16 +151,16 @@ export const GeoMapTab = () => {
               </defs>
 
               {/* Background Sea Floor */}
-              <rect width="800" height="440" fill="url(#depthGradient)" />
+              <rect x="-1000" y="-1000" width="3000" height="3000" fill="url(#depthGradient)" />
 
               {/* Grid Lines */}
               <g stroke="rgba(0, 229, 255, 0.08)" strokeWidth="1">
-                <line x1="0" y1="110" x2="800" y2="110" />
-                <line x1="0" y1="220" x2="800" y2="220" />
-                <line x1="0" y1="330" x2="800" y2="330" />
-                <line x1="200" y1="0" x2="200" y2="440" />
-                <line x1="400" y1="0" x2="400" y2="440" />
-                <line x1="600" y1="0" x2="600" y2="440" />
+                <line x1="-1000" y1="110" x2="2000" y2="110" />
+                <line x1="-1000" y1="220" x2="2000" y2="220" />
+                <line x1="-1000" y1="330" x2="2000" y2="330" />
+                <line x1="200" y1="-1000" x2="200" y2="2000" />
+                <line x1="400" y1="-1000" x2="400" y2="2000" />
+                <line x1="600" y1="-1000" x2="600" y2="2000" />
               </g>
 
               {/* Bathymetric Depth Contour Isolines */}
@@ -126,7 +224,12 @@ export const GeoMapTab = () => {
                   <g 
                     key={d.id} 
                     transform={`translate(${cx}, ${cy})`}
-                    onClick={() => selectObject(d.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!hasDraggedRef.current) {
+                        selectObject(d.id);
+                      }
+                    }}
                     style={{ cursor: 'pointer' }}
                   >
                     {isSelected && (
@@ -185,12 +288,18 @@ export const GeoMapTab = () => {
           display: flex;
           flex-direction: column;
         }
+        .map-header-controls {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
         .chart-viewport {
           position: relative;
           width: 100%;
           aspect-ratio: 16 / 9;
           background: #02080f;
           overflow: hidden;
+          user-select: none;
         }
         .bathymetry-svg {
           width: 100%;
@@ -205,6 +314,7 @@ export const GeoMapTab = () => {
           border: 1px solid var(--border-soft);
           padding: 4px 10px;
           border-radius: var(--radius-xs);
+          pointer-events: none;
         }
         .geo-side-panel {
           display: flex;

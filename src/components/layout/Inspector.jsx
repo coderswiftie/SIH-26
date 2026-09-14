@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useMission } from '../../context/MissionContext';
-import { Target, ShieldAlert, CheckCircle2, AlertTriangle, Eye, Download, Check, X, RefreshCw } from 'lucide-react';
+import { Target, ShieldAlert, CheckCircle2, AlertTriangle, Eye, Download, Check, X, RefreshCw, Send } from 'lucide-react';
 
 export const Inspector = () => {
-  const { selectedObject, confirmHazard, reclassifyObject, dismissObject, updatePhysicsStatus } = useMission();
+  const { selectedObject, confirmHazard, reclassifyObject, dismissObject, escalateToCommand, updatePhysicsStatus } = useMission();
   const [reclassifyModalOpen, setReclassifyModalOpen] = useState(false);
   const [selectedNewClass, setSelectedNewClass] = useState('Subsea Cable');
 
@@ -257,6 +257,13 @@ export const Inspector = () => {
             >
               <X size={13} /> Dismiss
             </button>
+            <button 
+              className="btn btn-amber"
+              style={{ background: 'rgba(255, 209, 102, 0.15)', color: 'var(--amber-warning)', borderColor: 'rgba(255, 209, 102, 0.4)' }}
+              onClick={() => escalateToCommand(selectedObject.id)}
+            >
+              <Send size={13} /> Escalate
+            </button>
           </div>
 
           <button 
@@ -438,8 +445,8 @@ export const Inspector = () => {
         }
         .button-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 8px;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 6px;
         }
         .reclassify-box {
           background: var(--bg-dark);

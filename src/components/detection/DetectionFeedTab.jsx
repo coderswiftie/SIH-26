@@ -1,13 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMission } from '../../context/MissionContext';
 import { Database, Search, Filter, Target, ShieldAlert, ArrowUpDown } from 'lucide-react';
 
 export const DetectionFeedTab = () => {
-  const { detections, selectedObjectId, selectObject, confirmHazard } = useMission();
+  const { 
+    detections, 
+    selectedObjectId, 
+    selectObject, 
+    confirmHazard,
+    typeFilter,
+    setTypeFilter,
+    statusFilter,
+    setStatusFilter,
+    pendingFeedFilter,
+    setPendingFeedFilter
+  } = useMission();
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState('ALL');
-  const [statusFilter, setStatusFilter] = useState('ALL');
   const [minConfidence, setMinConfidence] = useState(50);
+
+  useEffect(() => {
+    if (pendingFeedFilter) {
+      if (pendingFeedFilter.typeFilter !== undefined) {
+        setTypeFilter(pendingFeedFilter.typeFilter);
+      }
+      if (pendingFeedFilter.statusFilter !== undefined) {
+        setStatusFilter(pendingFeedFilter.statusFilter);
+      }
+      setPendingFeedFilter(null);
+    }
+  }, [pendingFeedFilter]);
 
   const filteredDetections = detections.filter(d => {
     const matchesSearch = d.id.toLowerCase().includes(searchTerm.toLowerCase()) || 
